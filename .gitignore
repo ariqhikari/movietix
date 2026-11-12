@@ -15,5 +15,5 @@ xcuserdata
 
 # Secrets — JANGAN pernah commit file ini
 local.properties
-iosApp/src/Secrets.xcconfig
+shared/src/org/ariqhikari/movietix/core/data/network/Secrets.kt
 
