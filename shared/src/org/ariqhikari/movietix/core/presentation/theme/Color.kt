@@ -23,7 +23,7 @@ object MovieTixColors {
     val CinemaTextTertiary = Color(0xFF63738A)     // Inactive labels only
     val CinemaTextHint = Color(0xFF7E8EAA)         // Placeholder & hint text (4.92:1 on card - pass AA)
     val CinemaSeatAvailable = Color(0xFF222B3D)    // Available seat neutral bg
-    val CinemaSeatBorder = Color(0xFF3D4C69)       // Available seat boundary stroke
+    val CinemaSeatBorder = Color(0xFF506488)       // Available seat boundary stroke (3.24:1 - pass AA UI Component)
     val CinemaSeatSelected = Color(0xFFE5A93C)     // Selected seat solid gold
     val CinemaSeatOccupied = Color(0xFF161B26)     // Occupied seat muted
     val StateSuccess = Color(0xFF2EC492)           // Success confirmation
