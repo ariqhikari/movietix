@@ -49,6 +49,10 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.toRoute
+import org.ariqhikari.movietix.domain.booking.model.BookingOrder
+import org.ariqhikari.movietix.presentation.booking.checkout.CheckoutEffect
+import org.ariqhikari.movietix.presentation.booking.checkout.CheckoutScreen
+import org.ariqhikari.movietix.presentation.booking.checkout.CheckoutViewModel
 import org.ariqhikari.movietix.presentation.cinema.schedule.ScheduleEffect
 import org.ariqhikari.movietix.presentation.cinema.schedule.ScheduleScreen
 import org.ariqhikari.movietix.presentation.cinema.schedule.ScheduleViewModel
@@ -228,12 +232,19 @@ fun AppNavigation(
                         }
                         is SeatMapEffect.NavigateToCheckout -> {
                             navController.navigate(
-                                ScreenDestination.CheckoutPlaceholder(
+                                ScreenDestination.Checkout(
                                     scheduleId = effect.scheduleId,
+                                    movieId = effect.movieId,
                                     movieTitle = effect.movieTitle,
                                     cinemaName = effect.cinemaName,
                                     studioName = effect.studioName,
-                                    seats = effect.selectedSeats.joinToString(", "),
+                                    studioType = effect.studioType,
+                                    dateStr = effect.dateStr,
+                                    timeStr = effect.timeStr,
+                                    seats = effect.selectedSeats,
+                                    pricePerSeat = effect.pricePerSeat,
+                                    subtotal = effect.subtotal,
+                                    serviceFee = effect.serviceFee,
                                     totalPrice = effect.totalPrice
                                 )
                             ) {
@@ -257,152 +268,54 @@ fun AppNavigation(
             )
         }
 
-        composable<ScreenDestination.CheckoutPlaceholder> { backStackEntry ->
-            val destination = backStackEntry.toRoute<ScreenDestination.CheckoutPlaceholder>()
-            CheckoutPlaceholderScreen(
+        composable<ScreenDestination.Checkout> { backStackEntry ->
+            val destination = backStackEntry.toRoute<ScreenDestination.Checkout>()
+            val order = BookingOrder(
+                scheduleId = destination.scheduleId,
+                movieId = destination.movieId,
                 movieTitle = destination.movieTitle,
+                cinemaId = destination.cinemaId,
                 cinemaName = destination.cinemaName,
                 studioName = destination.studioName,
-                seats = destination.seats,
+                studioType = destination.studioType,
+                showtime = destination.timeStr,
+                date = destination.dateStr,
+                selectedSeats = destination.seats,
+                pricePerSeat = destination.pricePerSeat,
+                serviceFee = destination.serviceFee,
                 totalPrice = destination.totalPrice,
-                onBackClick = { navController.popBackStack() },
-                onHomeClick = {
-                    navController.popBackStack(ScreenDestination.Home, inclusive = false)
-                }
+                posterUrl = destination.posterUrl
             )
-        }
-    }
-}
+            val viewModel: CheckoutViewModel = koinViewModel(
+                parameters = { parametersOf(order) }
+            )
+            val state by viewModel.state.collectAsStateWithLifecycle()
+            val snackbarHostState = remember { SnackbarHostState() }
 
-@Composable
-private fun CheckoutPlaceholderScreen(
-    movieTitle: String,
-    cinemaName: String,
-    studioName: String,
-    seats: String,
-    totalPrice: Long,
-    onBackClick: () -> Unit,
-    onHomeClick: () -> Unit
-) {
-    Scaffold(
-        topBar = {
-            Surface(
-                color = MaterialTheme.colorScheme.surface,
-                modifier = Modifier.fillMaxWidth()
-            ) {
-                Row(
-                    modifier = Modifier
-                        .statusBarsPadding()
-                        .fillMaxWidth()
-                        .padding(horizontal = 16.dp, vertical = 12.dp),
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    Box(
-                        modifier = Modifier
-                            .size(40.dp)
-                            .clip(CircleShape)
-                            .background(Color(0xFF222530))
-                            .clickable(role = Role.Button, onClick = onBackClick)
-                            .semantics {
-                                contentDescription = "Kembali ke denah kursi"
-                                role = Role.Button
-                            },
-                        contentAlignment = Alignment.Center
-                    ) {
-                        Text(
-                            text = "←",
-                            color = Color.White,
-                            fontSize = 20.sp,
-                            fontWeight = FontWeight.Bold
-                        )
+            LaunchedEffect(viewModel.effect) {
+                viewModel.effect.collect { effect ->
+                    when (effect) {
+                        is CheckoutEffect.NavigateBack -> {
+                            navController.popBackStack()
+                        }
+                        is CheckoutEffect.NavigateToTicketDetail -> {
+                            navController.popBackStack(ScreenDestination.Home, inclusive = false)
+                        }
+                        is CheckoutEffect.NavigateToHome -> {
+                            navController.popBackStack(ScreenDestination.Home, inclusive = false)
+                        }
+                        is CheckoutEffect.ShowSnackbar -> {
+                            snackbarHostState.showSnackbar(effect.message)
+                        }
                     }
-
-                    Spacer(modifier = Modifier.width(12.dp))
-
-                    Text(
-                        text = "Konfirmasi Pesanan",
-                        style = MaterialTheme.typography.titleMedium,
-                        fontWeight = FontWeight.Bold,
-                        color = Color.White
-                    )
-                }
-            }
-        },
-        containerColor = MaterialTheme.colorScheme.background
-    ) { innerPadding ->
-        Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(innerPadding)
-                .padding(24.dp),
-            horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.Center
-        ) {
-            Card(
-                shape = RoundedCornerShape(16.dp),
-                colors = CardDefaults.cardColors(containerColor = Color(0xFF1A1C24)),
-                modifier = Modifier.fillMaxWidth()
-            ) {
-                Column(modifier = Modifier.padding(20.dp)) {
-                    Text(
-                        text = movieTitle,
-                        style = MaterialTheme.typography.titleLarge,
-                        fontWeight = FontWeight.Bold,
-                        color = Color.White
-                    )
-                    Spacer(modifier = Modifier.height(4.dp))
-                    Text(
-                        text = "$cinemaName • $studioName",
-                        style = MaterialTheme.typography.bodyMedium,
-                        color = Color(0xFF9EA3B0)
-                    )
-                    Spacer(modifier = Modifier.height(12.dp))
-                    HorizontalDivider(color = Color(0xFF282B36))
-                    Spacer(modifier = Modifier.height(12.dp))
-                    Text(
-                        text = "Kursi: $seats",
-                        style = MaterialTheme.typography.titleMedium,
-                        color = MaterialTheme.colorScheme.primary,
-                        fontWeight = FontWeight.SemiBold
-                    )
-                    Spacer(modifier = Modifier.height(6.dp))
-                    Text(
-                        text = "Total: Rp ${totalPrice.toString().reversed().chunked(3).joinToString(".").reversed()}",
-                        style = MaterialTheme.typography.titleLarge,
-                        fontWeight = FontWeight.Bold,
-                        color = Color.White
-                    )
                 }
             }
 
-            Spacer(modifier = Modifier.height(24.dp))
-
-            Text(
-                text = "Alur pembayaran simulasi dummy akan diimplementasikan pada Fase 4.",
-                style = MaterialTheme.typography.bodyMedium,
-                color = Color(0xFF8E93A2),
-                textAlign = TextAlign.Center
+            CheckoutScreen(
+                state = state,
+                onAction = viewModel::onAction,
+                snackbarHostState = snackbarHostState
             )
-
-            Spacer(modifier = Modifier.height(24.dp))
-
-            Button(
-                onClick = onHomeClick,
-                colors = ButtonDefaults.buttonColors(
-                    containerColor = MaterialTheme.colorScheme.primary,
-                    contentColor = MaterialTheme.colorScheme.onPrimary
-                ),
-                shape = RoundedCornerShape(12.dp),
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(50.dp)
-            ) {
-                Text(
-                    text = "Kembali ke Beranda",
-                    style = MaterialTheme.typography.labelLarge,
-                    fontWeight = FontWeight.Bold
-                )
-            }
         }
     }
 }

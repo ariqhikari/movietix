@@ -169,13 +169,13 @@ Mengimplementasikan alur konfirmasi pesanan dan simulasi transaksi pembayaran ta
   - [x] Buat mapper antara `TicketEntity` dan domain `Ticket` dengan fallback aman untuk status dan metode pembayaran tak dikenal.
   - [x] Definisikan `TicketRepository` di `domain/ticket/repository/` dan implementasikan `TicketRepositoryImpl` di `data/ticket/repository/` (atomik, batas maksimal 50 tiket terbaru, pencegahan duplikasi kode booking, toleran terhadap JSON rusak).
   - *Commit*: `feat(ticket): implement ticket datastore storage and repository`
-- [ ] **4.3 Presentation Layer Checkout & Simulasi Pembayaran**
-  - [ ] Rancang kontrak `CheckoutContract` (`State`, `Action`, `Effect`) di `presentation/booking/checkout/`.
-  - [ ] Implementasikan `CheckoutViewModel` (dengan pencegahan klik ganda dan handling toggle simulasi gagal debug).
-  - [ ] Buat komponen `CheckoutScreen` (ringkasan film, bioskop, studio, jadwal, kursi, rincian biaya tiket & layanan).
-  - [ ] Buat modal `PaymentMethodBottomSheet` (daftar metode pembayaran dengan radio selection).
-  - [ ] Buat layar status `CheckoutSuccessContent` dan `CheckoutFailureContent` (aksi coba lagi, ganti metode, atau kembali ke seat map).
-  - [ ] Gantikan rute placeholder di `AppNavigation.kt` dengan `CheckoutScreen`.
+- [x] **4.3 Presentation Layer Checkout & Simulasi Pembayaran**
+  - [x] Rancang kontrak `CheckoutContract` (`State`, `Action`, `Effect`) di `presentation/booking/checkout/`.
+  - [x] Implementasikan `CheckoutViewModel` (dengan pencegahan klik ganda dan handling toggle simulasi gagal debug).
+  - [x] Buat komponen `CheckoutScreen` (ringkasan film, bioskop, studio, jadwal, kursi, rincian biaya tiket & layanan).
+  - [x] Buat modal `PaymentMethodBottomSheet` (daftar metode pembayaran dengan radio selection).
+  - [x] Buat layar status `CheckoutSuccessContent` dan `CheckoutFailureContent` (aksi coba lagi, ganti metode, atau kembali ke seat map).
+  - [x] Gantikan rute placeholder di `AppNavigation.kt` dengan `CheckoutScreen`.
   - *Commit*: `feat(booking): build checkout screen payment bottom sheet and result states`
 
 > **Definition of Done (DoD) Fase 4:**  

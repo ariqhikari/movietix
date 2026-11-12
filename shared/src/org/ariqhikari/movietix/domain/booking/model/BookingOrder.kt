@@ -18,4 +18,7 @@ data class BookingOrder(
     val serviceFee: Long,
     val totalPrice: Long,
     val posterUrl: String? = null
-)
+) {
+    val subtotal: Long
+        get() = pricePerSeat * selectedSeats.size
+}

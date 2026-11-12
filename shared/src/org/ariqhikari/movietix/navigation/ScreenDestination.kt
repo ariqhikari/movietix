@@ -36,12 +36,21 @@ sealed interface ScreenDestination {
     ) : ScreenDestination
 
     @Serializable
-    data class CheckoutPlaceholder(
+    data class Checkout(
         val scheduleId: String,
+        val movieId: Int,
         val movieTitle: String,
+        val cinemaId: String = "",
         val cinemaName: String,
         val studioName: String,
-        val seats: String,
-        val totalPrice: Long
+        val studioType: String,
+        val dateStr: String,
+        val timeStr: String,
+        val seats: List<String>,
+        val pricePerSeat: Long,
+        val subtotal: Long,
+        val serviceFee: Long,
+        val totalPrice: Long,
+        val posterUrl: String? = null
     ) : ScreenDestination
 }

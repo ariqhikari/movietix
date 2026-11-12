@@ -30,6 +30,8 @@ fun createCoreModule(isDebug: Boolean = false) = module {
     single { createDataStore() }
 
     single<CoroutineDispatcher> { Dispatchers.IO }
+
+    single(org.koin.core.qualifier.named("isDebug")) { isDebug }
 }
 
 val coreModule = createCoreModule(isDebug = false)

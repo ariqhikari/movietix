@@ -23,7 +23,8 @@ fun startMovieTixKoin(
                     createCoreModule(isDebug = isDebug),
                     movieModule,
                     cinemaModule,
-                    ticketModule
+                    ticketModule,
+                    bookingModule
                 ) + additionalModules
             )
         }
