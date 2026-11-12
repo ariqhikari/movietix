@@ -211,6 +211,32 @@ class ProceduralScheduleEngine(
         return "$movieId-$cinemaId-$studioId-$date-$time"
     }
 
+    data class ParsedScheduleId(
+        val movieId: Int,
+        val cinemaId: String,
+        val studioId: String,
+        val date: String,
+        val time: String
+    )
+
+    fun parseScheduleId(scheduleId: String): ParsedScheduleId? {
+        return try {
+            val parts = scheduleId.split("-")
+            if (parts.size < 6) return null
+            val movieId = parts[0].toIntOrNull() ?: return null
+            val time = parts.last()
+            val day = parts[parts.size - 2]
+            val month = parts[parts.size - 3]
+            val year = parts[parts.size - 4]
+            val date = "$year-$month-$day"
+            val studioId = parts[parts.size - 5]
+            val cinemaId = parts.subList(1, parts.size - 5).joinToString("-")
+            ParsedScheduleId(movieId, cinemaId, studioId, date, time)
+        } catch (_: Exception) {
+            null
+        }
+    }
+
     private fun calculatePrice(studioType: StudioType, isWeekend: Boolean): Long {
         return when (studioType) {
             StudioType.REGULAR -> if (isWeekend) 55_000L else 45_000L

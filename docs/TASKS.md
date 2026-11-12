@@ -129,10 +129,10 @@ Membangun *procedural engine* deterministik untuk jadwal bioskop, pemilih tangga
   - [x] Hasilkan daftar bioskop (XXI, CGV, Cinepolis), tipe studio (IMAX, Velvet, Regular), jam tayang, dan harga tiket.
   - [x] Hasilkan pre-occupied seats (kursi yang telah diisi penonton lain) secara deterministik.
   - *Commit*: `feat(cinema): implement deterministic procedural schedule engine`
-- [ ] **3.2 Repository Jadwal & Integrasi DataStore**
-  - [ ] Definisikan kontrak `CinemaScheduleRepository` di `domain/cinema/repository/`.
-  - [ ] Buat `CinemaScheduleRepositoryImpl` di `data/cinema/repository/` yang menggabungkan kursi hasil seed + kursi terpesan user dari DataStore.
-  - [ ] Buat use cases: `GetCinemasWithSchedulesUseCase`, `GetSeatLayoutUseCase`.
+- [x] **3.2 Repository Jadwal & Integrasi DataStore**
+  - [x] Definisikan kontrak `CinemaScheduleRepository` di `domain/cinema/repository/`.
+  - [x] Buat `CinemaScheduleRepositoryImpl` di `data/cinema/repository/` yang menggabungkan kursi hasil seed + kursi terpesan user dari DataStore.
+  - [x] Buat use cases: `GetCinemasWithSchedulesUseCase`, `GetSeatLayoutUseCase`.
   - *Commit*: `feat(cinema): implement cinema schedule repository and seat layout usecase`
 - [ ] **3.3 Presentation Layer Jadwal & Seat Map**
   - [ ] Rancang kontrak `SeatMapContract` (`State`, `Action`, `Effect`) di `presentation/cinema/seatmap/`.
