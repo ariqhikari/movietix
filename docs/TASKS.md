@@ -101,15 +101,15 @@ Menampilkan informasi mendalam mengenai film yang dipilih: backdrop hero resolus
   - [x] Implementasikan mapper domain model `MovieDetail`, `CastMember`, `TrailerVideo`.
   - [x] Perluas `MovieRepositoryImpl` dan buat `GetMovieDetailUseCase`.
   - *Commit*: `feat(movie): add movie detail credits and videos api integration`
-- [ ] **2.2 Presentation Layer Detail Film**
-  - [ ] Rancang kontrak `DetailContract` (`State`, `Action`, `Effect`) di `presentation/movie/detail/`.
-  - [ ] Implementasikan `DetailViewModel` yang menerima parameter `movieId`.
-  - [ ] Buat komponen `BackdropHeroHeader` dengan efek *scrim gradient* gelap ke transparan.
-  - [ ] Buat layout *overlapping poster* (radius 16dp) dengan info judul, durasi (`Xj Ym`), dan rating.
-  - [ ] Buat komponen expandable `SynopsisSection` ("Baca Selengkapnya").
-  - [ ] Buat komponen horizontal `CastCarousel` (avatar cast + nama karakter).
-  - [ ] Buat komponen `TrailerCard` yang memicu intent/URI trailer resmi.
-  - [ ] Buat floating *Sticky Bottom CTA Bar* ("PILIH JADWAL & KURSI").
+- [x] **2.2 Presentation Layer Detail Film**
+  - [x] Rancang kontrak `DetailContract` (`State`, `Action`, `Effect`) di `presentation/movie/detail/`.
+  - [x] Implementasikan `DetailViewModel` yang menerima parameter `movieId`.
+  - [x] Buat komponen `BackdropHeroHeader` dengan efek *scrim gradient* gelap ke transparan.
+  - [x] Buat layout *overlapping poster* (radius 16dp) dengan info judul, durasi (`Xj Ym`), dan rating.
+  - [x] Buat komponen expandable `SynopsisSection` ("Baca Selengkapnya").
+  - [x] Buat komponen horizontal `CastCarousel` (avatar cast + nama karakter).
+  - [x] Buat komponen `TrailerCard` yang memicu intent/URI trailer resmi.
+  - [x] Buat floating *Sticky Bottom CTA Bar* ("PILIH JADWAL & KURSI").
   - *Commit*: `feat(movie): implement cinematic movie detail screen`
 
 > **Definition of Done (DoD) Fase 2:**  
