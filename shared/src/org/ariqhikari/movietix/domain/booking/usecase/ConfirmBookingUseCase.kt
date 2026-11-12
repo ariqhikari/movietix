@@ -80,8 +80,14 @@ class ConfirmBookingUseCase(
                 ticketRepository.saveTicket(ticket)
             }
             if (saveTicketResult is AppResult.Error) {
-                val rollbackError = executeRollback(order.scheduleId, order.selectedSeats, saveTicketResult.error)
-                return if (rollbackError != null) AppResult.Error(rollbackError) else saveTicketResult
+                val cause = when (val err = saveTicketResult.error) {
+                    is AppError.Storage.WriteFailed -> err.cause
+                    is AppError.Storage.ReadFailed -> err.cause
+                    else -> "Gagal menyimpan tiket ke penyimpanan lokal"
+                }
+                val saveError = AppError.Booking.SaveTicketFailed(cause)
+                val rollbackError = executeRollback(order.scheduleId, order.selectedSeats, saveError)
+                return if (rollbackError != null) AppResult.Error(rollbackError) else AppResult.Error(saveError)
             }
 
             // Step 4: Success
