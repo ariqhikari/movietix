@@ -158,46 +158,49 @@ Mengimplementasikan alur konfirmasi pesanan dan simulasi transaksi pembayaran ta
 
 ### Checklist Tugas:
 - [ ] **4.1 Domain & State Machine Pembayaran**
-  - [ ] Definisikan enum `PaymentMethod` (BCA Virtual Account, GoPay, Kartu Debit/Kredit).
-  - [ ] Definisikan domain model `BookingOrder` dan `PaymentResult` di `domain/booking/model/`.
-  - [ ] Buat `ProcessPaymentSimulationUseCase` dengan delay simulasi coroutine dan probabilitas hasil.
-  - *Commit*: `feat(booking): implement payment simulation domain models and use case`
-- [ ] **4.2 Presentation Layer Checkout Bottom Sheet**
+  - [ ] Definisikan enum `PaymentMethod` (BCA Virtual Account, GoPay, OVO, Kartu Debit/Kredit).
+  - [ ] Definisikan domain model `Ticket`, `TicketStatus` (ACTIVE, EXPIRED, CANCELLED), dan `PaymentResult` di `domain/ticket/model/` dan `domain/booking/model/`.
+  - [ ] Buat `PaymentGateway` interface dan `DummyPaymentGateway` di `data/booking/remote/` (dengan delay tersimulasi dan injeksi clock/dispatcher).
+  - [ ] Buat `BookingCodeGenerator` ("MTX-" + 6 digit) dan `QrPayloadFactory` (format "MOVIETIX:v1:...").
+  - [ ] Implementasikan `ConfirmBookingUseCase` dengan alur 4 langkah (reserveSeats -> processPayment -> saveTicket -> success) beserta proteksi `withContext(NonCancellable)` pada kompensasi `releaseSeats`.
+  - *Commit*: `feat(booking): implement payment domain models gateway and confirm booking use case`
+- [ ] **4.2 Data Layer & Persistence Tiket**
+  - [ ] Definisikan `TicketEntity` dan `TicketHistoryContainer` (dengan `schema_version`) di `data/ticket/local/`.
+  - [ ] Buat mapper antara `TicketEntity` dan domain `Ticket` dengan fallback aman untuk status dan metode pembayaran tak dikenal.
+  - [ ] Definisikan `TicketRepository` di `domain/ticket/repository/` dan implementasikan `TicketRepositoryImpl` di `data/ticket/repository/` (atomik, batas maksimal 50 tiket terbaru, pencegahan duplikasi kode booking, toleran terhadap JSON rusak).
+  - *Commit*: `feat(ticket): implement ticket datastore storage and repository`
+- [ ] **4.3 Presentation Layer Checkout & Simulasi Pembayaran**
   - [ ] Rancang kontrak `CheckoutContract` (`State`, `Action`, `Effect`) di `presentation/booking/checkout/`.
-  - [ ] Buat komponen modal `CheckoutBottomSheet`:
-    - [ ] Ringkasan tiket (Judul film, studio, jadwal, daftar kursi).
-    - [ ] Rincian biaya (Harga kursi x n + Biaya Layanan Aplikasi).
-    - [ ] Radio list pilihan metode pembayaran dummy.
-    - [ ] Tombol CTA bayar dengan spinner loading pengganti teks.
-  - [ ] Rancang dialog animasi hasil transaksi (Success dialog perayaan dan Failure dialog coba lagi).
-  - *Commit*: `feat(booking): build checkout bottom sheet and simulation dialogs`
+  - [ ] Implementasikan `CheckoutViewModel` (dengan pencegahan klik ganda dan handling toggle simulasi gagal debug).
+  - [ ] Buat komponen `CheckoutScreen` (ringkasan film, bioskop, studio, jadwal, kursi, rincian biaya tiket & layanan).
+  - [ ] Buat modal `PaymentMethodBottomSheet` (daftar metode pembayaran dengan radio selection).
+  - [ ] Buat layar status `CheckoutSuccessContent` dan `CheckoutFailureContent` (aksi coba lagi, ganti metode, atau kembali ke seat map).
+  - [ ] Gantikan rute placeholder di `AppNavigation.kt` dengan `CheckoutScreen`.
+  - *Commit*: `feat(booking): build checkout screen payment bottom sheet and result states`
 
 > **Definition of Done (DoD) Fase 4:**  
-> Alur checkout berjalan mulus dari sheet konfirmasi, simulasi loading pembayaran, hingga memicu penyimpanan tiket saat transaksi dinyatakan berhasil.
+> Alur checkout berjalan mulus dari ringkasan pesanan, pemilihan metode pembayaran, simulasi loading pembayaran, penyimpanan tiket terkonfirmasi secara atomik ke DataStore, hingga layar sukses/gagal yang andal.
 
 ---
 
-## Fase 5: E-Tiket Berperforasi, QR Code Offline & Transaksi Atomik
+## Fase 5: E-Tiket Berperforasi & QR Code Offline
 
 **Tujuan:**  
-Menyimpan tiket yang telah dibayar ke DataStore persisten secara atomik melalui `ConfirmBookingUseCase`, menampilkan bukti tiket dengan desain fisik berperforasi (*punched notch*), dan me-render QR Code offline dengan `qrose`.
+Menampilkan bukti tiket yang telah dibeli dengan desain fisik berperforasi (*punched notch*), me-render QR Code offline dengan `qrose`, serta menyediakan layar riwayat tiket.
 
 ### Checklist Tugas:
-- [ ] **5.1 Transaksi Atomik Pemesanan & Rollback**
-  - [ ] Implementasikan `ConfirmBookingUseCase` di `domain/booking/usecase/`:
-    - [ ] Langkah 1: `reserveSeats(...)`.
-    - [ ] Langkah 2: `saveTicket(...)`.
-    - [ ] Rollback: Panggil `releaseSeats(...)` bila langkah 2 gagal.
-  - *Commit*: `feat(booking): implement confirm booking use case with atomic rollback`
-- [ ] **5.2 Integrasi Library QR Code Multiplatform**
+- [ ] **5.1 Integrasi Library QR Code Multiplatform**
   - [ ] Integrasikan `io.github.alexzhirkevich:qrose` untuk rendering QR Code murni di Compose Canvas.
   - *Commit*: `feat(ticket): integrate qrose library for offline qr rendering`
-- [ ] **5.3 Data Layer & Persistence Tiket**
-  - [ ] Buat `TicketDataStoreDataSource` dan `TicketEntity` di `data/ticket/local/`.
-  - [ ] Implementasikan `TicketRepositoryImpl` yang mengekspos `Flow<List<Ticket>>`.
-  - [ ] Buat mapper antara `TicketEntity` dan domain `Ticket`.
-  - *Commit*: `feat(ticket): implement ticket datastore storage and repository`
-- [ ] **5.4 Presentation Layer E-Tiket & Riwayat Transaksi**
+- [ ] **5.2 Presentation Layer E-Tiket & Riwayat Transaksi**
+  - [ ] Rancang kontrak `TicketDetailContract` dan `TicketHistoryContract` di `presentation/ticket/`.
+  - [ ] Buat custom shape Compose `PerforatedTicketCard`:
+    - [ ] Efek notch setengah lingkaran pada kedua sisi kartu.
+    - [ ] Garis perforasi putus-putus (`- - -`).
+    - [ ] Area QR Code kontras tinggi (hitam di atas putih `#FFFFFF`).
+  - [ ] Buat layar `TicketDetailScreen` (dengan status tiket aktif dan catatan bahwa fitur share/kalender adalah future work).
+  - [ ] Buat layar `TicketHistoryScreen` (daftar kartu tiket lampau dan empty state).
+  - *Commit*: `feat(ticket): build perforated ticket detail and history screens`
   - [ ] Rancang kontrak `TicketDetailContract` dan `TicketHistoryContract` di `presentation/ticket/`.
   - [ ] Buat custom shape Compose `PerforatedTicketCard`:
     - [ ] Efek notch setengah lingkaran pada kedua sisi kartu.

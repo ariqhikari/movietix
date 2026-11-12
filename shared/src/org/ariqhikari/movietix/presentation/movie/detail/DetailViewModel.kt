@@ -156,6 +156,7 @@ class DetailViewModel(
             is AppError.Booking.SeatAlreadyOccupied,
             is AppError.Booking.PaymentFailedSimulated,
             is AppError.Booking.SaveTicketFailed,
+            is AppError.Booking.RollbackFailed,
             is AppError.Booking.InvalidSelection -> "Kendala pada pemesanan."
             is AppError.Unknown -> "Terjadi kesalahan. Silakan coba lagi."
         }

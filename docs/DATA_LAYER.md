@@ -260,37 +260,70 @@ Bila operasi ke-2 gagal (misal DataStore I/O exception), kursi tidak boleh tetap
 
 ### 4.2 Desain Alur Transaksi & Rollback
 
+Urutan transaksi atomik pada `ConfirmBookingUseCase`:
+1. **Langkah 1: `reserveSeats(scheduleId, selectedSeats)`**
+   - Mengunci kursi di DataStore jadwal secara atomik.
+   - Jika gagal (kursi sudah terisi / storage error), hentikan alur dan langsung kembalikan `AppError.Booking.SeatAlreadyOccupied` **tanpa** memproses pembayaran dan tanpa menyimpan tiket.
+2. **Langkah 2: Simulasi Pembayaran (`PaymentGateway.processPayment`)**
+   - Menjalankan gateway pembayaran dummy.
+   - Jika gagal, jalankan rollback `releaseSeats(scheduleId, selectedSeats)` dan kembalikan `AppError.Booking.PaymentFailedSimulated`.
+3. **Langkah 3: `saveTicket(ticket)`**
+   - Menyimpan tiket ke DataStore riwayat transaksi (`ticket_history_v1`) secara atomik.
+   - Jika gagal, jalankan rollback `releaseSeats(scheduleId, selectedSeats)` dan kembalikan `AppError.Booking.SaveTicketFailed`.
+4. **Langkah 4: Sukses**
+   - Kembalikan `AppResult.Success(ticket)`.
+
 ```
-   [User Konfirmasi Pembayaran]
-                │
-                ▼
-      reserveSeats(order)
-      ├── GAGAL ─────────► Return AppResult.Error(SeatAlreadyOccupied / StorageError)
-      │
-      └── SUKSES
-            │
-            ▼
-       saveTicket(ticket)
-       ├── SUKSES ────────► Return AppResult.Success(ticket)
-       │
-       └── GAGAL
-             │
-             ▼
-        [KOMPENSASI / ROLLBACK]
-        releaseSeats(scheduleId, seats)
-             │
-             ▼
-        Return AppResult.Error(SaveTicketFailed)
+                  [User Menekan Tombol Bayar]
+                               │
+                               ▼
+               Langkah 1: reserveSeats(scheduleId, seats)
+               ├── GAGAL ─────────► Return Error(SeatAlreadyOccupied)
+               │                     (Pembayaran & simpan tiket TIDAK dipanggil)
+               └── SUKSES
+                     │
+                     ▼
+               Langkah 2: processPayment(order)
+               ├── GAGAL ─────────► [ROLLBACK withContext(NonCancellable)]
+               │                     releaseSeats(scheduleId, seats)
+               │                     Return Error(PaymentFailedSimulated)
+               └── SUKSES
+                     │
+                     ▼
+               Langkah 3: saveTicket(ticket)
+               ├── GAGAL ─────────► [ROLLBACK withContext(NonCancellable)]
+               │                     releaseSeats(scheduleId, seats)
+               │                     Return Error(SaveTicketFailed)
+               └── SUKSES
+                     │
+                     ▼
+               Langkah 4: Return Success(ticket)
 ```
 
-### 4.3 Implementasi Kontrak Domain: `ConfirmBookingUseCase`
+### 4.3 Aturan Kritis Transaksi & Keandalan (Reliability)
+
+1. **Tidak Ada "Hold" Saat Checkout Terbuka**: Kursi baru dikunci saat user menekan tombol "Bayar". Mencegah kursi menggantung tanpa batas waktu jika user meninggalkan layar atau mematikan aplikasi sebelum bayar.
+2. **Proteksi Pembatalan Coroutine (`NonCancellable`)**:
+   Bila coroutine pembeli dibatalkan (misalnya user menutup aplikasi atau keluar layar) *setelah* `reserveSeats` berhasil, langkah kompensasi (`releaseSeats`) atau penyimpanan tiket yang sudah terlanjur dibayar wajib dituntaskan di dalam blok `withContext(NonCancellable)`.
+3. **Hasil Rollback Tidak Boleh Diabaikan**:
+   Bila `releaseSeats` mengembalikan error, sistem mencatat log dan mengembalikan error khusus `AppError.Booking.RollbackFailed(cause, originalError)`, membedakan kegagalan pembayaran dari kegagalan kompensasi kursi.
+4. **Format Kode Booking & QR Payload**:
+   - **Booking Code**: Format `"MTX-" + 6 digit angka acak` (misal `"MTX-948201"`), diverifikasi tidak bentrok dengan riwayat tiket yang sudah tersimpan di DataStore.
+   - **QR Payload**: Format berversi dan deterministik `"MOVIETIX:v1:<bookingCode>:<scheduleId>:<kursi dipisah koma>"`, misal `"MOVIETIX:v1:MTX-948201:sch_550_cgv-gi_std-reg_20261112_1030:C5,C6"`.
+5. **Risiko Terbuka & Mitigasi**:
+   Jika proses aplikasi dimatikan paksa oleh sistem operasi (*process death*) persis di tengah eksekusi coroutine sebelum rollback selesai, kursi dapat tertinggal terkunci di DataStore tanpa tiket. Mitigasi di masa depan adalah implementasi mekanisme reservasi berjangka (*time-to-live hold expiry* / cleanup worker).
+
+### 4.4 Implementasi Kontrak Domain: `ConfirmBookingUseCase`
 
 ```kotlin
 // domain/booking/usecase/ConfirmBookingUseCase.kt
 package org.ariqhikari.movietix.domain.booking.usecase
 
+import kotlinx.coroutines.NonCancellable
+import kotlinx.coroutines.withContext
 import org.ariqhikari.movietix.core.domain.model.AppError
 import org.ariqhikari.movietix.core.domain.model.AppResult
+import org.ariqhikari.movietix.domain.booking.gateway.PaymentGateway
 import org.ariqhikari.movietix.domain.booking.model.BookingOrder
 import org.ariqhikari.movietix.domain.cinema.repository.CinemaScheduleRepository
 import org.ariqhikari.movietix.domain.ticket.model.Ticket
@@ -298,30 +331,46 @@ import org.ariqhikari.movietix.domain.ticket.repository.TicketRepository
 
 class ConfirmBookingUseCase(
     private val cinemaScheduleRepository: CinemaScheduleRepository,
+    private val paymentGateway: PaymentGateway,
     private val ticketRepository: TicketRepository
 ) {
     suspend operator fun invoke(order: BookingOrder): AppResult<Ticket> {
-        // Langkah 1: Kunci/reservasi kursi di DataStore bioskop
+        // Langkah 1: Kunci/reservasi kursi secara atomik
         val reserveResult = cinemaScheduleRepository.reserveSeats(order.scheduleId, order.selectedSeats)
         if (reserveResult is AppResult.Error) {
             return reserveResult
         }
 
-        // Siapkan objek tiket domain
-        val ticket = order.toTicket()
-
-        // Langkah 2: Simpan bukti tiket ke DataStore riwayat transaksi
-        val saveTicketResult = ticketRepository.saveTicket(ticket)
-        return when (saveTicketResult) {
-            is AppResult.Success -> AppResult.Success(ticket)
-            is AppResult.Error -> {
-                // Langkah 3 (Kompensasi / Rollback): Batalkan reservasi kursi bila tiket gagal disimpan
-                cinemaScheduleRepository.releaseSeats(order.scheduleId, order.selectedSeats)
-                AppResult.Error(
-                    AppError.Booking.SaveTicketFailed("Gagal menyimpan transaksi tiket. Kursi telah dilepaskan kembali.")
-                )
-            }
+        // Langkah 2: Simulasi Pembayaran
+        val paymentResult = paymentGateway.processPayment(order)
+        if (paymentResult is AppResult.Error) {
+            val rollbackError = executeRollback(order.scheduleId, order.selectedSeats, paymentResult.error)
+            return if (rollbackError != null) AppResult.Error(rollbackError) else paymentResult
         }
+
+        // Langkah 3: Simpan Bukti Tiket
+        val ticket = order.toTicket()
+        val saveTicketResult = withContext(NonCancellable) {
+            ticketRepository.saveTicket(ticket)
+        }
+        if (saveTicketResult is AppResult.Error) {
+            val rollbackError = executeRollback(order.scheduleId, order.selectedSeats, saveTicketResult.error)
+            return if (rollbackError != null) AppResult.Error(rollbackError) else saveTicketResult
+        }
+
+        // Langkah 4: Sukses
+        return AppResult.Success(ticket)
+    }
+
+    private suspend fun executeRollback(
+        scheduleId: String,
+        seats: List<String>,
+        originalError: AppError
+    ): AppError? = withContext(NonCancellable) {
+        val releaseResult = cinemaScheduleRepository.releaseSeats(scheduleId, seats)
+        if (releaseResult is AppResult.Error) {
+            AppError.Booking.RollbackFailed("Gagal melepaskan kursi saat rollback", originalError)
+        } else null
     }
 }
 ```

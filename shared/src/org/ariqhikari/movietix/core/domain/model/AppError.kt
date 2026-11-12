@@ -22,6 +22,7 @@ sealed interface AppError {
         data object PaymentFailedSimulated : Booking
         data class SaveTicketFailed(val cause: String) : Booking
         data object InvalidSelection : Booking
+        data class RollbackFailed(val cause: String, val originalError: AppError) : Booking
     }
 
     data class Unknown(val throwable: Throwable) : AppError
