@@ -71,13 +71,13 @@ Mengimplementasikan integrasi TMDB API untuk memuat film *Now Playing*, *Popular
   - [x] Definisikan kontrak interface `MovieRepository` di `domain/movie/repository/` (katalog film).
   - [x] Buat use cases: `GetNowPlayingMoviesUseCase`, `GetPopularMoviesUseCase`, `GetUpcomingMoviesUseCase`.
   - *Commit*: `feat(movie): create domain models and catalog use cases`
-- [ ] **1.3 Presentation Layer Layar Home**
-  - [ ] Rancang kontrak `HomeContract` (`State`, `Action`, `Effect`) di `presentation/movie/home/`.
-  - [ ] Implementasikan `HomeViewModel` dengan coroutine Flow dan caching kategori.
-  - [ ] Buat komponen UI `HeroBannerCarousel` (auto-scroll + page indicator).
-  - [ ] Buat komponen UI `MovieCard` (aspect ratio 2:3, corner radius 16dp, rating badge emas, poster Coil 3).
-  - [ ] Buat komponen UI `CategoryFilterChips` (Now Playing, Popular, Upcoming).
-  - [ ] Buat komponen UI `ShimmerSkeletonList` dan `ErrorStateView`.
+- [x] **1.3 Presentation Layer Layar Home**
+  - [x] Rancang kontrak `HomeContract` (`State`, `Action`, `Effect`) di `presentation/movie/home/`.
+  - [x] Implementasikan `HomeViewModel` dengan coroutine Flow dan caching kategori.
+  - [x] Buat komponen UI `HeroBannerCarousel` (auto-scroll + page indicator).
+  - [x] Buat komponen UI `MovieCard` (aspect ratio 2:3, corner radius 16dp, rating badge emas, poster Coil 3).
+  - [x] Buat komponen UI `CategoryFilterChips` (Now Playing, Popular, Upcoming).
+  - [x] Buat komponen UI `ShimmerSkeletonList` dan `ErrorStateView`.
   - *Commit*: `feat(movie): build home screen with hero banner and catalog grid`
 - [ ] **1.4 Registrasi Koin & Navigasi Home**
   - [ ] Daftarkan `MovieModule.kt` ke Koin.
