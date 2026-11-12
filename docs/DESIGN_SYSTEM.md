@@ -77,9 +77,9 @@ Ambang batas WCAG AA:
 
 Tipografi menggunakan dua keluarga huruf Google Fonts bebas lisensi yang dibundel di `shared/composeResources/font/`:
 1. **Display Font: `Outfit`**  
-   Font geometris dengan kurva modern, proporsi lebar yang sinematis, dan bobot *Bold/ExtraBold* untuk judul film, kode booking, dan header layar.
+   Font geometris dengan kurva modern, proporsi lebar yang sinematis, dan bobot *Bold/ExtraBold* untuk judul film, kode booking, dan header layar. Dilengkapi file lisensi `OFL_Outfit.txt`.
 2. **Body Font: `Plus Jakarta Sans`**  
-   Font modern berdaya baca tinggi (*high legibility*), memiliki proporsi angka yang sangat bersih untuk jam tayang, baris/kolom kursi, dan nominal mata uang rupiah.
+   Font modern berdaya baca tinggi (*high legibility*), memiliki proporsi angka yang sangat bersih untuk jam tayang, baris/kolom kursi, dan nominal mata uang rupiah. Menggunakan single variable font `plusjakartasans_variable.ttf` dengan konfigurasi `FontVariation.Settings(FontVariation.weight(...))` untuk bobot 400 (Regular), 500 (Medium), 600 (SemiBold), dan 700 (Bold). Dilengkapi file lisensi `OFL_PlusJakartaSans.txt`.
 
 ### Skala Tipografi (Typography Scale)
 

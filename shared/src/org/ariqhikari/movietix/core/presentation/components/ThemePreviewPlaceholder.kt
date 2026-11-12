@@ -33,6 +33,7 @@ import androidx.compose.ui.unit.dp
 import org.ariqhikari.movietix.core.presentation.theme.Dimensions
 import org.ariqhikari.movietix.core.presentation.theme.MovieTixColors
 import org.ariqhikari.movietix.core.presentation.theme.MovieTixTheme
+import org.ariqhikari.movietix.core.presentation.theme.MovieTixTypographyTokens
 import org.ariqhikari.movietix.core.presentation.theme.Radius
 import org.ariqhikari.movietix.core.presentation.theme.Spacing
 
@@ -120,8 +121,40 @@ fun ThemePreviewPlaceholder() {
                     color = MaterialTheme.colorScheme.onSurfaceVariant
                 )
                 Text(
-                    text = "Label Mono — KODE: MTX-948201 • KURSI: C5, C6",
-                    style = MaterialTheme.typography.titleMedium.copy(fontWeight = FontWeight.Bold),
+                    text = "Label Small / Mono — KODE: MTX-948201",
+                    style = MaterialTheme.typography.labelSmall,
+                    color = MaterialTheme.colorScheme.primary
+                )
+            }
+
+            Spacer(modifier = Modifier.height(Spacing.md))
+
+            // Font Variations Showcase (Plus Jakarta Sans)
+            CardContainer(title = "Plus Jakarta Sans — 4 Weights (Variable Font)") {
+                Text(
+                    text = "Regular (400) — Sinema Indonesia Modern",
+                    style = MaterialTheme.typography.bodyLarge.copy(fontWeight = FontWeight.Normal),
+                    color = MaterialTheme.colorScheme.onSurface
+                )
+                Text(
+                    text = "Medium (500) — Sinema Indonesia Modern",
+                    style = MaterialTheme.typography.bodyLarge.copy(fontWeight = FontWeight.Medium),
+                    color = MaterialTheme.colorScheme.onSurface
+                )
+                Text(
+                    text = "SemiBold (600) — Sinema Indonesia Modern",
+                    style = MaterialTheme.typography.bodyLarge.copy(fontWeight = FontWeight.SemiBold),
+                    color = MaterialTheme.colorScheme.onSurface
+                )
+                Text(
+                    text = "Bold (700) — Sinema Indonesia Modern",
+                    style = MaterialTheme.typography.bodyLarge.copy(fontWeight = FontWeight.Bold),
+                    color = MaterialTheme.colorScheme.onSurface
+                )
+                Spacer(modifier = Modifier.height(Spacing.xs))
+                Text(
+                    text = "Label Mono: MTX-948201 (Outfit Bold 16sp)",
+                    style = MovieTixTypographyTokens.labelMono(),
                     color = MaterialTheme.colorScheme.primary
                 )
             }
