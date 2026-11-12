@@ -41,7 +41,7 @@ class FakeMovieRepository : MovieRepository {
 
     override suspend fun getMovieDetail(movieId: Int): AppResult<MovieDetail> {
         lastRequestedMovieDetailId = movieId
-        return movieDetailResult ?: AppResult.Success(createDummyMovieDetail(movieId))
+        return movieDetailResult ?: AppResult.Success(createDummyMovieDetail(id = movieId))
     }
 
     override suspend fun getMovieCredits(movieId: Int): AppResult<List<CastMember>> {
@@ -76,13 +76,15 @@ class FakeMovieRepository : MovieRepository {
 
         fun createDummyMovieDetail(
             id: Int = 1,
-            title: String = "Test Movie Detail $id",
+            movieId: Int = id,
+            title: String = "Test Movie Detail $movieId",
             runtime: Int = 166,
             voteAverage: Double = 8.6,
             genres: List<String> = listOf("Sci-Fi", "Action")
         ): MovieDetail {
+            val resolvedId = if (movieId != 1) movieId else id
             return MovieDetail(
-                id = id,
+                id = resolvedId,
                 title = title,
                 tagline = "The epic journey continues",
                 overview = "A detailed overview for $title",
@@ -91,8 +93,8 @@ class FakeMovieRepository : MovieRepository {
                 voteAverage = voteAverage,
                 voteCount = 12400,
                 releaseDate = "2024-03-01",
-                posterUrl = "https://image.tmdb.org/t/p/w500/poster_$id.jpg",
-                backdropUrl = "https://image.tmdb.org/t/p/w1280/backdrop_$id.jpg"
+                posterUrl = "https://image.tmdb.org/t/p/w500/poster_$resolvedId.jpg",
+                backdropUrl = "https://image.tmdb.org/t/p/w1280/backdrop_$resolvedId.jpg"
             )
         }
 
