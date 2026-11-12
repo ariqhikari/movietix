@@ -1,21 +1,35 @@
-# Add project specific ProGuard rules here.
-# You can control the set of applied configuration files using the
-# proguardFiles setting in build.gradle.
-#
-# For more details, see
-#   http://developer.android.com/guide/developing/tools/proguard.html
+# MovieTix ProGuard / R8 Rules
 
-# If your project uses WebView with JS, uncomment the following
-# and specify the fully qualified class name to the JavaScript interface
-# class:
-#-keepclassmembers class fqcn.of.javascript.interface.for.webview {
-#   public *;
-#}
+# Preserve line numbers and source file names for debugging stack traces
+-keepattributes SourceFile,LineNumberTable
+-keepattributes *Annotation*
 
-# Uncomment this to preserve the line number information for
-# debugging stack traces.
-#-keepattributes SourceFile,LineNumberTable
+# --- Kotlinx Serialization ---
+-keepclassmembers class * {
+    @kotlinx.serialization.SerialName <fields>;
+}
+-keepclassmembers class **$serializer {
+    public static final **$serializer INSTANCE;
+}
+-keepclasseswithmembers class * {
+    public static final **$serializer Companion;
+}
 
-# If you keep the line number information, uncomment this to
-# hide the original source file name.
-#-renamesourcefileattribute SourceFile
+# --- Koin Dependency Injection ---
+-dontwarn org.koin.**
+
+# --- Ktor Client & OkHttp ---
+-dontwarn io.ktor.**
+-dontwarn okhttp3.**
+-dontwarn okio.**
+-keepnames class okhttp3.internal.publicsuffix.PublicSuffixDatabase
+
+# --- Coil 3 Image Loading ---
+-dontwarn coil3.**
+-keep class coil3.** { *; }
+
+# --- Jetpack DataStore Preferences ---
+-dontwarn androidx.datastore.**
+
+# --- Compose Multiplatform ---
+-dontwarn androidx.compose.**
