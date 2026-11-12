@@ -41,6 +41,9 @@ fun DetailScreen(
         viewModel.effect.collect { effect ->
             when (effect) {
                 is DetailEffect.NavigateBack -> onNavigateBack()
+                is DetailEffect.NavigateToSchedule -> {
+                    // Handled at navigation level
+                }
                 is DetailEffect.OpenUrl -> {
                     // Handled at navigation level or uri handler
                 }

@@ -27,6 +27,11 @@ sealed interface DetailAction {
 
 sealed interface DetailEffect {
     data object NavigateBack : DetailEffect
+    data class NavigateToSchedule(
+        val movieId: Int,
+        val movieTitle: String,
+        val posterUrl: String?
+    ) : DetailEffect
     data class OpenUrl(val url: String) : DetailEffect
     data class ShowSnackbar(val message: String) : DetailEffect
 }

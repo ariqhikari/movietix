@@ -1,18 +1,60 @@
 package org.ariqhikari.movietix.navigation
 
+import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.statusBarsPadding
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.HorizontalDivider
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarHostState
+import androidx.compose.material3.Surface
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalUriHandler
+import androidx.compose.ui.semantics.Role
+import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.role
+import androidx.compose.ui.semantics.semantics
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.toRoute
+import org.ariqhikari.movietix.presentation.cinema.schedule.ScheduleEffect
+import org.ariqhikari.movietix.presentation.cinema.schedule.ScheduleScreen
+import org.ariqhikari.movietix.presentation.cinema.schedule.ScheduleViewModel
+import org.ariqhikari.movietix.presentation.cinema.seatmap.SeatMapEffect
+import org.ariqhikari.movietix.presentation.cinema.seatmap.SeatMapScreen
+import org.ariqhikari.movietix.presentation.cinema.seatmap.SeatMapViewModel
 import org.ariqhikari.movietix.presentation.movie.detail.DetailEffect
 import org.ariqhikari.movietix.presentation.movie.detail.DetailScreenContent
 import org.ariqhikari.movietix.presentation.movie.detail.DetailViewModel
@@ -22,10 +64,6 @@ import org.ariqhikari.movietix.presentation.movie.home.HomeViewModel
 import org.koin.compose.viewmodel.koinViewModel
 import org.koin.core.parameter.parametersOf
 
-/**
- * Top-level application navigation graph.
- * Connects HomeScreen and DetailScreen with Koin-injected ViewModels.
- */
 @Composable
 fun AppNavigation(
     modifier: Modifier = Modifier,
@@ -78,6 +116,17 @@ fun AppNavigation(
                         is DetailEffect.NavigateBack -> {
                             navController.popBackStack()
                         }
+                        is DetailEffect.NavigateToSchedule -> {
+                            navController.navigate(
+                                ScreenDestination.Schedule(
+                                    movieId = effect.movieId,
+                                    movieTitle = effect.movieTitle,
+                                    posterUrl = effect.posterUrl
+                                )
+                            ) {
+                                launchSingleTop = true
+                            }
+                        }
                         is DetailEffect.OpenUrl -> {
                             try {
                                 uriHandler.openUri(effect.url)
@@ -97,6 +146,263 @@ fun AppNavigation(
                 onAction = viewModel::onAction,
                 snackbarHostState = snackbarHostState
             )
+        }
+
+        composable<ScreenDestination.Schedule> { backStackEntry ->
+            val destination = backStackEntry.toRoute<ScreenDestination.Schedule>()
+            val viewModel: ScheduleViewModel = koinViewModel(
+                parameters = {
+                    parametersOf(destination.movieId, destination.movieTitle, destination.posterUrl)
+                }
+            )
+            val state by viewModel.state.collectAsStateWithLifecycle()
+            val snackbarHostState = remember { SnackbarHostState() }
+
+            LaunchedEffect(viewModel.effect) {
+                viewModel.effect.collect { effect ->
+                    when (effect) {
+                        is ScheduleEffect.NavigateBack -> {
+                            navController.popBackStack()
+                        }
+                        is ScheduleEffect.NavigateToSeatMap -> {
+                            navController.navigate(
+                                ScreenDestination.SeatMap(
+                                    scheduleId = effect.scheduleId,
+                                    movieId = effect.movieId,
+                                    movieTitle = effect.movieTitle,
+                                    cinemaId = effect.cinemaId,
+                                    cinemaName = effect.cinemaName,
+                                    studioId = effect.studioId,
+                                    studioName = effect.studioName,
+                                    studioType = effect.studioType,
+                                    dateStr = effect.dateStr,
+                                    timeStr = effect.timeStr,
+                                    pricePerSeat = effect.pricePerSeat
+                                )
+                            ) {
+                                launchSingleTop = true
+                            }
+                        }
+                        is ScheduleEffect.ShowSnackbar -> {
+                            snackbarHostState.showSnackbar(effect.message)
+                        }
+                    }
+                }
+            }
+
+            ScheduleScreen(
+                state = state,
+                onAction = viewModel::onAction,
+                snackbarHostState = snackbarHostState
+            )
+        }
+
+        composable<ScreenDestination.SeatMap> { backStackEntry ->
+            val destination = backStackEntry.toRoute<ScreenDestination.SeatMap>()
+            val navParams = org.ariqhikari.movietix.presentation.cinema.seatmap.SeatMapNavParams(
+                scheduleId = destination.scheduleId,
+                movieId = destination.movieId,
+                movieTitle = destination.movieTitle,
+                cinemaId = destination.cinemaId,
+                cinemaName = destination.cinemaName,
+                studioId = destination.studioId,
+                studioName = destination.studioName,
+                studioTypeStr = destination.studioType,
+                dateStr = destination.dateStr,
+                timeStr = destination.timeStr,
+                pricePerSeat = destination.pricePerSeat
+            )
+            val viewModel: SeatMapViewModel = koinViewModel(
+                parameters = {
+                    parametersOf(navParams)
+                }
+            )
+            val state by viewModel.state.collectAsStateWithLifecycle()
+            val snackbarHostState = remember { SnackbarHostState() }
+
+            LaunchedEffect(viewModel.effect) {
+                viewModel.effect.collect { effect ->
+                    when (effect) {
+                        is SeatMapEffect.NavigateBack -> {
+                            navController.popBackStack()
+                        }
+                        is SeatMapEffect.NavigateToCheckout -> {
+                            navController.navigate(
+                                ScreenDestination.CheckoutPlaceholder(
+                                    scheduleId = effect.scheduleId,
+                                    movieTitle = effect.movieTitle,
+                                    cinemaName = effect.cinemaName,
+                                    studioName = effect.studioName,
+                                    seats = effect.selectedSeats.joinToString(", "),
+                                    totalPrice = effect.totalPrice
+                                )
+                            ) {
+                                launchSingleTop = true
+                            }
+                        }
+                        is SeatMapEffect.ShowWarning -> {
+                            snackbarHostState.showSnackbar(effect.message)
+                        }
+                        is SeatMapEffect.ShowError -> {
+                            snackbarHostState.showSnackbar(effect.message)
+                        }
+                    }
+                }
+            }
+
+            SeatMapScreen(
+                state = state,
+                onAction = viewModel::onAction,
+                snackbarHostState = snackbarHostState
+            )
+        }
+
+        composable<ScreenDestination.CheckoutPlaceholder> { backStackEntry ->
+            val destination = backStackEntry.toRoute<ScreenDestination.CheckoutPlaceholder>()
+            CheckoutPlaceholderScreen(
+                movieTitle = destination.movieTitle,
+                cinemaName = destination.cinemaName,
+                studioName = destination.studioName,
+                seats = destination.seats,
+                totalPrice = destination.totalPrice,
+                onBackClick = { navController.popBackStack() },
+                onHomeClick = {
+                    navController.popBackStack(ScreenDestination.Home, inclusive = false)
+                }
+            )
+        }
+    }
+}
+
+@Composable
+private fun CheckoutPlaceholderScreen(
+    movieTitle: String,
+    cinemaName: String,
+    studioName: String,
+    seats: String,
+    totalPrice: Long,
+    onBackClick: () -> Unit,
+    onHomeClick: () -> Unit
+) {
+    Scaffold(
+        topBar = {
+            Surface(
+                color = MaterialTheme.colorScheme.surface,
+                modifier = Modifier.fillMaxWidth()
+            ) {
+                Row(
+                    modifier = Modifier
+                        .statusBarsPadding()
+                        .fillMaxWidth()
+                        .padding(horizontal = 16.dp, vertical = 12.dp),
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Box(
+                        modifier = Modifier
+                            .size(40.dp)
+                            .clip(CircleShape)
+                            .background(Color(0xFF222530))
+                            .clickable(role = Role.Button, onClick = onBackClick)
+                            .semantics {
+                                contentDescription = "Kembali ke denah kursi"
+                                role = Role.Button
+                            },
+                        contentAlignment = Alignment.Center
+                    ) {
+                        Text(
+                            text = "←",
+                            color = Color.White,
+                            fontSize = 20.sp,
+                            fontWeight = FontWeight.Bold
+                        )
+                    }
+
+                    Spacer(modifier = Modifier.width(12.dp))
+
+                    Text(
+                        text = "Konfirmasi Pesanan",
+                        style = MaterialTheme.typography.titleMedium,
+                        fontWeight = FontWeight.Bold,
+                        color = Color.White
+                    )
+                }
+            }
+        },
+        containerColor = MaterialTheme.colorScheme.background
+    ) { innerPadding ->
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(innerPadding)
+                .padding(24.dp),
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.Center
+        ) {
+            Card(
+                shape = RoundedCornerShape(16.dp),
+                colors = CardDefaults.cardColors(containerColor = Color(0xFF1A1C24)),
+                modifier = Modifier.fillMaxWidth()
+            ) {
+                Column(modifier = Modifier.padding(20.dp)) {
+                    Text(
+                        text = movieTitle,
+                        style = MaterialTheme.typography.titleLarge,
+                        fontWeight = FontWeight.Bold,
+                        color = Color.White
+                    )
+                    Spacer(modifier = Modifier.height(4.dp))
+                    Text(
+                        text = "$cinemaName • $studioName",
+                        style = MaterialTheme.typography.bodyMedium,
+                        color = Color(0xFF9EA3B0)
+                    )
+                    Spacer(modifier = Modifier.height(12.dp))
+                    HorizontalDivider(color = Color(0xFF282B36))
+                    Spacer(modifier = Modifier.height(12.dp))
+                    Text(
+                        text = "Kursi: $seats",
+                        style = MaterialTheme.typography.titleMedium,
+                        color = MaterialTheme.colorScheme.primary,
+                        fontWeight = FontWeight.SemiBold
+                    )
+                    Spacer(modifier = Modifier.height(6.dp))
+                    Text(
+                        text = "Total: Rp ${totalPrice.toString().reversed().chunked(3).joinToString(".").reversed()}",
+                        style = MaterialTheme.typography.titleLarge,
+                        fontWeight = FontWeight.Bold,
+                        color = Color.White
+                    )
+                }
+            }
+
+            Spacer(modifier = Modifier.height(24.dp))
+
+            Text(
+                text = "Alur pembayaran simulasi dummy akan diimplementasikan pada Fase 4.",
+                style = MaterialTheme.typography.bodyMedium,
+                color = Color(0xFF8E93A2),
+                textAlign = TextAlign.Center
+            )
+
+            Spacer(modifier = Modifier.height(24.dp))
+
+            Button(
+                onClick = onHomeClick,
+                colors = ButtonDefaults.buttonColors(
+                    containerColor = MaterialTheme.colorScheme.primary,
+                    contentColor = MaterialTheme.colorScheme.onPrimary
+                ),
+                shape = RoundedCornerShape(12.dp),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(50.dp)
+            ) {
+                Text(
+                    text = "Kembali ke Beranda",
+                    style = MaterialTheme.typography.labelLarge,
+                    fontWeight = FontWeight.Bold
+                )
+            }
         }
     }
 }

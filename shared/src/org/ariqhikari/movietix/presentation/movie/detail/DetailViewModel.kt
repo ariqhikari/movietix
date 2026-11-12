@@ -43,7 +43,14 @@ class DetailViewModel(
                 sendEffect(DetailEffect.OpenUrl(action.trailer.youtubeWatchUrl))
             }
             is DetailAction.SelectScheduleClicked -> {
-                sendEffect(DetailEffect.ShowSnackbar("Fitur pemilihan jadwal akan tersedia pada Fase 3."))
+                val detail = _state.value.movieDetail
+                sendEffect(
+                    DetailEffect.NavigateToSchedule(
+                        movieId = movieId,
+                        movieTitle = detail?.title ?: "Film",
+                        posterUrl = detail?.posterUrl
+                    )
+                )
             }
             is DetailAction.BackClicked -> {
                 sendEffect(DetailEffect.NavigateBack)

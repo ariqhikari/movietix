@@ -12,4 +12,36 @@ sealed interface ScreenDestination {
 
     @Serializable
     data class Detail(val movieId: Int) : ScreenDestination
+
+    @Serializable
+    data class Schedule(
+        val movieId: Int,
+        val movieTitle: String,
+        val posterUrl: String? = null
+    ) : ScreenDestination
+
+    @Serializable
+    data class SeatMap(
+        val scheduleId: String,
+        val movieId: Int,
+        val movieTitle: String,
+        val cinemaId: String,
+        val cinemaName: String,
+        val studioId: String,
+        val studioName: String,
+        val studioType: String,
+        val dateStr: String,
+        val timeStr: String,
+        val pricePerSeat: Long
+    ) : ScreenDestination
+
+    @Serializable
+    data class CheckoutPlaceholder(
+        val scheduleId: String,
+        val movieTitle: String,
+        val cinemaName: String,
+        val studioName: String,
+        val seats: String,
+        val totalPrice: Long
+    ) : ScreenDestination
 }

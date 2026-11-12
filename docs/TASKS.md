@@ -134,16 +134,16 @@ Membangun *procedural engine* deterministik untuk jadwal bioskop, pemilih tangga
   - [x] Buat `CinemaScheduleRepositoryImpl` di `data/cinema/repository/` yang menggabungkan kursi hasil seed + kursi terpesan user dari DataStore.
   - [x] Buat use cases: `GetCinemasWithSchedulesUseCase`, `GetSeatLayoutUseCase`.
   - *Commit*: `feat(cinema): implement cinema schedule repository and seat layout usecase`
-- [ ] **3.3 Presentation Layer Jadwal & Seat Map**
-  - [ ] Rancang kontrak `SeatMapContract` (`State`, `Action`, `Effect`) di `presentation/cinema/seatmap/`.
-  - [ ] Buat komponen `HorizontalDatePicker` (format nama hari + tanggal angka).
-  - [ ] Buat komponen `CinemaShowtimeCard` (nama bioskop, badge studio, slot jam tayang).
-  - [ ] Buat komponen `CinemaScreenCurved` (layar lengkung cekung dengan pendar).
-  - [ ] Buat komponen `SeatMapGrid`:
-    - [ ] Render 8 baris (A-H) x 10 kolom dengan pemisah lorong (*aisle*).
-    - [ ] Terapkan visual multi-modal (tersedia: border abu; terpilih: emas + centang `v`; terisi: gelap + silang `X`).
-    - [ ] Tambahkan animasi spring bounce dan haptic feedback via `LocalHapticFeedback.current`.
-  - [ ] Buat `SeatMapLegend` dan floating checkout bar kalkulasi harga total.
+- [x] **3.3 Presentation Layer Jadwal & Seat Map**
+  - [x] Rancang kontrak `SeatMapContract` (`State`, `Action`, `Effect`) di `presentation/cinema/seatmap/`.
+  - [x] Buat komponen `HorizontalDatePicker` (format nama hari + tanggal angka).
+  - [x] Buat komponen `CinemaShowtimeCard` (nama bioskop, badge studio, slot jam tayang).
+  - [x] Buat komponen `CinemaScreenCurved` (layar lengkung cekung dengan pendar).
+  - [x] Buat komponen `SeatMapGrid`:
+    - [x] Render 8 baris (A-H) x 10 kolom dengan pemisah lorong (*aisle*).
+    - [x] Terapkan visual multi-modal (tersedia: border abu; terpilih: emas + centang `v`; terisi: gelap + silang `X`).
+    - [x] Tambahkan animasi spring bounce dan haptic feedback via `LocalHapticFeedback.current`.
+  - [x] Buat `SeatMapLegend` dan floating checkout bar kalkulasi harga total.
   - *Commit*: `feat(cinema): create interactive seat map screen with haptic feedback`
 
 > **Definition of Done (DoD) Fase 3:**  
