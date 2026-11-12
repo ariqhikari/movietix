@@ -27,11 +27,11 @@ Menyiapkan *version catalog* lengkap, mengonfigurasi Koin DI, Ktor Client HTTPS 
   - [x] Implementasikan palet warna `MovieTixColors` (`light-primary` `#825000`, `state-error` `#FF6B6B`) dan `MovieTixTypography` di `core/presentation/theme/`.
   - [x] Buat kerangka `MovieTixTheme` yang mendukung status bar edge-to-edge.
   - *Commit*: `style(design-system): implement color tokens typography and theme`
-- [ ] **0.3 Ktor Networking & Error Handling Core**
-  - [ ] Deklarasikan `expect fun getHttpEngine(): HttpClientEngine` di `core/data/network/`.
-  - [ ] Implementasikan `actual` di `src@android` (OkHttp) dan `src@ios` (Darwin).
-  - [ ] Buat `HttpClientFactory` dengan base URL `https://api.themoviedb.org/3/`, header Bearer token, dan sanitasi logging.
-  - [ ] Definisikan sealed class `AppResult<T>` dan hirarki `AppError` di `core/domain/model/`.
+- [x] **0.3 Ktor Networking & Error Handling Core**
+  - [x] Deklarasikan `expect fun getHttpEngine(): HttpClientEngine` di `core/data/network/`.
+  - [x] Implementasikan `actual` di `src@android` (OkHttp) dan `src@ios` (Darwin).
+  - [x] Buat `HttpClientFactory` dengan base URL `https://api.themoviedb.org/3/`, header Bearer token, dan sanitasi logging.
+  - [x] Definisikan sealed class `AppResult<T>` dan hirarki `AppError` di `core/domain/model/`.
   - *Commit*: `feat(core): setup ktor http client and appresult error handling`
 - [ ] **0.4 Local DataStore Storage Core**
   - [ ] Deklarasikan `expect fun createDataStorePath(fileName: String): String` di `core/data/storage/`.
