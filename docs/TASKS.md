@@ -66,10 +66,10 @@ Mengimplementasikan integrasi TMDB API untuk memuat film *Now Playing*, *Popular
   - [x] Implementasikan `MovieMapper` (`MovieDto.toDomain(): Movie`) di `data/movie/mapper/` dengan format poster/backdrop URL dan fallback null/blank.
   - [x] Buat `MovieRepositoryImpl` di `data/movie/repository/` dengan in-memory caching untuk genre TMDB.
   - *Commit*: `feat(movie): implement tmdb remote datasource and repository`
-- [ ] **1.2 Domain Layer Fitur Film**
-  - [ ] Definisikan domain model `Movie`, `MovieCategory`, `Genre` di `domain/movie/model/`.
-  - [ ] Definisikan kontrak interface `MovieRepository` di `domain/movie/repository/`.
-  - [ ] Buat use cases: `GetNowPlayingMoviesUseCase`, `GetPopularMoviesUseCase`, `GetUpcomingMoviesUseCase`.
+- [x] **1.2 Domain Layer Fitur Film**
+  - [x] Definisikan domain model `Movie`, `MovieCategory`, `Genre` di `domain/movie/model/`.
+  - [x] Definisikan kontrak interface `MovieRepository` di `domain/movie/repository/` (katalog film).
+  - [x] Buat use cases: `GetNowPlayingMoviesUseCase`, `GetPopularMoviesUseCase`, `GetUpcomingMoviesUseCase`.
   - *Commit*: `feat(movie): create domain models and catalog use cases`
 - [ ] **1.3 Presentation Layer Layar Home**
   - [ ] Rancang kontrak `HomeContract` (`State`, `Action`, `Effect`) di `presentation/movie/home/`.
