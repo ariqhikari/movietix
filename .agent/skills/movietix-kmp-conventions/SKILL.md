@@ -1,82 +1,142 @@
 ---
-name: movietix-ui-design
-description: Aturan desain UI dan tipografi untuk project MovieTix (Compose Multiplatform). Gunakan skill ini SETIAP KALI membuat, mengubah, atau mereview UI apa pun di project ini, termasuk screen, komponen, tema, warna, font, spacing, animasi, dan layout, walaupun user tidak menyebut kata "desain". Tujuannya mencegah hasil UI generik ala "AI slop" dan menjaga konsistensi visual antar fase.
+name: movietix-kmp-conventions
+description: Konvensi arsitektur, struktur folder, dan Git commit untuk project MovieTix (Kotlin Multiplatform, Amper). Gunakan skill ini SETIAP KALI menulis, mengubah, atau mereview kode non-UI di project ini, termasuk repository, use case, ViewModel, Contract, Koin module, Ktor client, DataStore, mapper, model, error handling, navigasi, test, dan setiap kali akan membuat git commit, walaupun user tidak menyebut kata "arsitektur". Menjaga kode tiap fase tetap seragam, rapi, dan maintainable.
 ---
 
-# MovieTix UI Design Rules
+# MovieTix KMP Conventions
 
-UI MovieTix harus terlihat dirancang oleh manusia yang punya selera, bukan hasil template. Skill ini berlaku untuk semua kode Compose di commonMain.
+Aturan ini berlaku untuk semua kode dan commit di project MovieTix. Kode harus konsisten antar fase, mudah di-test, dan mudah dijelaskan saat review portfolio.
 
 ## Sumber kebenaran
 
-1. Baca `docs/DESIGN_SYSTEM.md` SEBELUM menulis atau mengubah UI. Palet, font, scale, dan spesifikasi komponen yang ada di sana adalah acuan utama.
-2. Jika `docs/DESIGN_SYSTEM.md` belum ada, berhenti dan minta dibuat dulu. Jangan mengarang desain dari nol di tengah implementasi.
-3. Jika aturan di file itu bertentangan dengan skill ini, ikuti DESIGN_SYSTEM.md, lalu catat konfliknya di jawaban akhir.
+1. Baca `PLAN.md`, `docs/ARCHITECTURE.md`, `docs/DATA_LAYER.md`, dan `docs/TASKS.md` sebelum mengerjakan task. Struktur folder, nama package, dan versi dependency di sana adalah acuan utama.
+2. Kerjakan task sesuai urutan fase di `docs/TASKS.md`, lalu centang task yang selesai.
+3. Jika dokumen ambigu atau bertentangan dengan kenyataan di repo, tulis pertanyaannya di jawaban. Jangan berasumsi diam-diam.
+4. Jika perlu menyimpang dari dokumen, jelaskan alasannya dan perbarui dokumennya di commit yang sama.
 
-## Larangan keras (ciri AI slop)
+## Build tool dan source set
 
-- Gradient ungu-biru default, atau gradient apa pun tanpa alasan visual yang jelas.
-- Glassmorphism / blur berlebihan sebagai dekorasi.
-- Semua kartu memakai shadow dan radius yang sama. Radius dan elevation harus punya hierarki dan alasan.
-- Emoji atau ikon sebagai hiasan. Ikon hanya untuk fungsi (navigasi, aksi, status).
-- Layout generik "hero besar + tiga kartu fitur".
-- Warna hardcode (`Color(0xFF...)`) di dalam composable. Semua warna lewat theme token.
-- Font default sistem tanpa pertimbangan. Font dan skala tipografi diambil dari design system.
-- Teks placeholder generik seperti "Lorem ipsum", "Welcome to MovieTix", atau copywriting bergaya chatbot. Tulis microcopy yang spesifik dan singkat dalam Bahasa Indonesia.
-- Animasi dekoratif (bounce, pulse, shimmer di mana-mana). Motion hanya untuk memberi makna.
+- Project memakai **Amper** (`module.yaml`). Kode common ada di `src/`, kode spesifik platform di `src@android/` dan `src@ios/`.
+- Package root: `org.ariqhikari.movietix`.
+- Jangan menambahkan plugin atau konfigurasi Gradle tanpa memastikan Amper mendukungnya. Khusus token TMDB, gunakan `Secrets.TMDB_ACCESS_TOKEN` di `core/data/network/Secrets.kt` (file ter-gitignore) dengan `Secrets.kt.template` di repository.
 
-## Prinsip yang harus diikuti
+## Struktur folder: package-by-layer
 
-**Karakter visual.** Pertahankan satu arah visual yang konsisten (nuansa tiket bioskop fisik, poster film, sinema malam, sesuai DESIGN_SYSTEM.md). Setiap keputusan visual baru harus bisa dijelaskan dengan "kenapa cocok dengan arah ini".
+```
+org/ariqhikari/movietix/
+├── App.kt
+├── core/            # fondasi bersama: network, storage, AppResult/AppError, theme, komponen UI umum
+├── data/            # movie/ cinema/ booking/ ticket/ (remote, local, mapper, repository)
+├── domain/          # movie/ cinema/ booking/ ticket/ (model, repository, usecase)
+├── presentation/    # movie/ cinema/ booking/ ticket/ (screen, ViewModel, Contract)
+├── di/              # CoreModule, MovieModule, CinemaModule, BookingModule, TicketModule, KoinInit
+└── navigation/      # AppNavigation, ScreenDestination
+```
 
-**Token, bukan angka lepas.**
-- Warna: dari `MaterialTheme.colorScheme` atau object theme custom milik project.
-- Tipografi: dari `MaterialTheme.typography` atau theme custom. Dilarang memanggil `fontSize = 17.sp` langsung di screen.
-- Spacing dan radius: dari scale yang didefinisikan (mis. `Spacing.md`, `Radius.sm`). Dilarang angka dp acak di screen.
+Aturan struktur:
+- Layer teratas tetap `core`, `data`, `domain`, `presentation`, `di`. Jangan diubah ke package-by-feature.
+- Di dalam `data`, `domain`, dan `presentation`, subfolder fitur bernama sama: `movie`, `cinema`, `booking`, `ticket`.
+- Kode yang dipakai >= 2 fitur masuk `core/`. Kode yang hanya relevan untuk satu fitur dilarang masuk `core/`.
+- `presentation/<fitur>` tidak boleh memanggil ViewModel atau state internal fitur lain. Komunikasi antar layar lewat parameter rute di `ScreenDestination`.
+- Arah dependency: `presentation -> domain <- data`. `domain` murni Kotlin: tidak boleh mengimpor Ktor, DataStore, Compose, atau library platform.
 
-**Hierarki lebih penting dari dekorasi.** Poster film adalah elemen visual utama. UI di sekitarnya harus tenang dan memberi ruang, bukan bersaing dengan poster.
+## Aturan inti
 
-**Komponen kunci harus memakai spesifikasi yang sudah ditetapkan:**
-- Movie card dan poster grid
-- Seat map: status available, selected, taken harus dibedakan lewat lebih dari warna saja (bentuk, ikon, pola, atau label)
-- Tiket dengan potongan perforasi
-- Bottom sheet pembayaran
+**Dependency Injection (Koin)**
+- Semua dependency lewat constructor injection dan interface, bukan implementasi konkret. Dilarang membuat instance dependency langsung di dalam kelas.
+- Satu modul Koin per area (`CoreModule`, `MovieModule`, `CinemaModule`, `BookingModule`, `TicketModule`), dikumpulkan di `KoinInit.kt` yang dipanggil dari entry point Android dan iOS. Inisialisasi Koin menggunakan `KoinPlatformTools.defaultContext()` untuk kompatibilitas multiplatform.
+- Parameter `isDebug: Boolean` diteruskan ke `startMovieTixKoin(isDebug = ...)` dari platform entry point (`MainActivity` via `ApplicationInfo.FLAG_DEBUGGABLE`, `ViewController` via `Platform.isDebugBinary`).
+- ViewModel didaftarkan dengan DSL ViewModel milik Koin. Dilarang service locator (`get()` / `inject()`) di dalam business logic.
 
-**Semua state ditangani.** Setiap screen wajib punya tampilan untuk loading, error (dengan aksi retry), empty, dan content. Tidak boleh ada screen yang hanya menangani happy path.
+**Pemisahan model**
+- DTO (`*Dto`, remote), Entity (`*Entity`, DataStore), dan Domain Model adalah tiga tipe terpisah dengan mapper eksplisit (`toDomain()` / `toEntity()`).
+- Dilarang membocorkan DTO atau Entity ke `domain` dan `presentation`.
 
-**Motion bermakna.** Transisi poster ke detail, pemilihan kursi, perubahan status pembayaran. Durasi singkat, easing konsisten, dan hormati pengaturan reduced motion bila platform mendukung.
+**Repository dan use case**
+- Interface repository ada di `domain/<fitur>/repository`, implementasi di `data/<fitur>/repository`.
+- Satu use case = satu tanggung jawab, dipanggil lewat `operator fun invoke(...)`.
+- ViewModel memanggil use case. Pengecualian (passthrough 1:1 ke repository) harus dicatat di ARCHITECTURE.md.
+- Aksi yang melibatkan lebih dari satu fitur diorkestrasi di use case domain, bukan di presentation atau data.
 
-**Aksesibilitas minimum.**
-- Tap target minimal 48dp.
-- `contentDescription` untuk setiap gambar/ikon yang bermakna, `null` untuk yang dekoratif.
-- Teks harus tetap terbaca dan layout tidak rusak pada font scale besar.
-- Kontras teks memenuhi WCAG AA di light dan dark theme.
+**Pemesanan tiket (atomisitas)**
+- Gunakan `ConfirmBookingUseCase` untuk alur: `reserveSeats` lalu `saveTicket`.
+- Jika `saveTicket` gagal, wajib `releaseSeats` sebagai rollback. Hasil `releaseSeats` tidak boleh diabaikan: jika rollback gagal, log dan kembalikan error yang jelas.
+- `reserveSeats` harus memeriksa dan menandai kursi dalam satu operasi atomik (satu `dataStore.edit`), agar tidak balapan.
+- Pastikan urutan alur (hold kursi, pembayaran dummy, simpan tiket) konsisten dengan dokumen, dan tidak ada kondisi "sudah dibayar tetapi kursi gagal dipesan".
 
-## Aturan spesifik MovieTix
+**Error handling**
+- Gunakan `AppResult<T>` (`Success` / `Error`) dan hierarki `AppError` (Network, Storage, Booking, Unknown) dari `core/domain/model`. Jangan `throw` di boundary bisnis.
+- Exception dari Ktor dan DataStore ditangkap di layer `data` lalu diterjemahkan ke `AppError`.
+- Jangan menelan exception tanpa log atau state error. Jangan me-catch `CancellationException`.
 
-- Tema ada di `core/presentation/theme/` (`MovieTixColors`, `MovieTixTypography`, `MovieTixTheme`), komponen umum di `core/presentation/components/`. Komponen yang dipakai >= 2 fitur masuk sana. Komponen satu fitur tetap di `presentation/<fitur>/`.
-- Dark theme adalah tema utama. Light theme ("Matinee Mode") wajib tetap berfungsi dan lolos kontras.
-- Radius poster card dan detail card memakai `radius-lg` (16dp). Jangan memakai angka radius lain.
-- Elevasi lewat tonal surface layering + border 1dp, bukan drop shadow.
-- Warna `cinema-text-tertiary` hanya untuk label nonaktif, bukan untuk teks hint atau teks yang harus terbaca (kontrasnya di bawah 4.5:1).
-- Seat map: kotak visual 34dp dengan hit target tetap minimal 48dp; selected memakai centang, occupied memakai silang + arsiran. Batas kursi tersedia harus punya kontras minimal 3:1 terhadap latar.
-- Haptic lewat `LocalHapticFeedback` di common. Jangan menambah `expect/actual` untuk UI.
-- QR tiket: hitam di atas putih, ukuran 160dp, dirender dengan `qrose`.
-- Di luar scope: simpan gambar tiket, tambah ke kalender, bagikan tiket. Jangan membuat UI untuk fitur ini.
-- Tanpa emoji di UI, wireframe, maupun microcopy.
+**Presentation (UDF dengan Contract)**
+- Satu `XxxContract` per screen berisi `State` (data class immutable), `Action` (sealed interface), dan `Effect` (sealed interface).
+- ViewModel menurunkan `androidx.lifecycle.ViewModel`, memegang `MutableStateFlow<State>` privat yang diekspos sebagai `StateFlow`, menerima `Action` lewat satu fungsi `onAction(...)`, dan mengirim `Effect` lewat `Channel` yang diekspos sebagai `Flow`.
+- Composable screen stateless terhadap logic: state masuk, action keluar. Efek sekali jalan (navigasi, snackbar) tidak disimpan di `State`.
+
+**Networking (Ktor)**
+- Satu `HttpClient` dari `createHttpClient(...)` di `CoreModule`: HTTPS, base `https://api.themoviedb.org/3/`, ContentNegotiation (kotlinx.serialization), timeout, dan `Authorization: Bearer <token>` di header.
+- Logging dikendalikan flag `isDebug`, header `Authorization` wajib disanitasi, dan level `NONE` di release build.
+- Endpoint dan base URL dikumpulkan di satu tempat.
+
+**Local storage (DataStore Preferences)**
+- Akses DataStore hanya lewat kelas data source lokal, tidak langsung dari repository atau ViewModel.
+- Serialisasi JSON via kotlinx.serialization dengan `schema_version`.
+- Baca-ubah-tulis lewat `edit`/`updateData` agar atomik.
+- `AndroidContextProvider.init(context)` di `MainActivity.onCreate` dicatat sebagai technical debt sementara sampai Amper mendukung auto-initialization.
+
+**Rahasia**
+- Token TMDB (`Secrets.TMDB_ACCESS_TOKEN`) berasal dari file `Secrets.kt` di `commonMain` yang di-gitignore. Jangan hardcode ke file terlacak, jangan commit, jangan cetak di log. Pertahankan `Secrets.kt.template` di repo.
+
+**Multiplatform**
+- `expect/actual` hanya untuk dua hal: `getHttpEngine()` dan `createDataStorePath(...)`. Menambah `expect/actual` baru butuh alasan tertulis di ARCHITECTURE.md.
+- Haptic lewat `LocalHapticFeedback` di common. Fitur simpan gambar tiket, tambah ke kalender, dan bagikan di luar scope (future work).
+- Dilarang SwiftUI. iOS hanya host untuk Compose Multiplatform.
+- Waktu: `kotlinx.datetime`. Concurrency: coroutines + Flow, dispatcher diinjeksi, tanpa `GlobalScope`.
+
+## Penamaan
+
+- Interface repository tanpa prefix `I`, implementasi berakhiran `Impl` (`MovieRepository` / `MovieRepositoryImpl`).
+- Nama repository bioskop: `CinemaScheduleRepository` (bukan `CinemaRepository`).
+- DTO berakhiran `Dto`, entity lokal `Entity`, kontrak screen `XxxContract`, ViewModel `XxxViewModel`.
+- Use case berupa kata kerja: `GetNowPlayingMoviesUseCase`, `ConfirmBookingUseCase`.
+- Satu file untuk satu kelas utama, nama file sama dengan nama kelas.
+
+## Testing
+
+- Use case, repository, ViewModel, mapper, dan `ProceduralScheduleEngine` harus bisa diuji di `commonTest` dengan fake (`FakeMovieRepository`, `FakeCinemaScheduleRepository`, `FakeTicketRepository`), bukan mock yang rapuh.
+- Test wajib untuk: determinisme `ProceduralScheduleEngine`, `ConfirmBookingUseCase` (sukses dan rollback), kalkulasi harga, mapper dengan data null.
+- ViewModel diuji dengan Turbine untuk `State` dan `Effect`.
+
+## Git commit: Conventional Commits v1.0.0
+
+Semua commit wajib mengikuti https://www.conventionalcommits.org/en/v1.0.0/
+
+- Format: `<type>(<scope>): <description>`, body dan footer opsional.
+- Type: `feat`, `fix`, `docs`, `style`, `refactor`, `perf`, `test`, `build`, `ci`, `chore`.
+- Scope resmi: `core`, `movie`, `cinema`, `booking`, `ticket`, `di`, `design-system`, `deps`, `navigation`. Pilih scope yang paling sesuai dengan perubahan utama.
+- Description: huruf kecil, imperatif, tanpa titik di akhir, maksimal 72 karakter.
+- Breaking change: tambahkan `!` setelah type/scope, atau footer `BREAKING CHANGE:`.
+- Satu commit = satu perubahan logis. Commit setelah satu task di `docs/TASKS.md` selesai dan build/test lulus. Jangan menggabungkan beberapa task dalam satu commit.
+- Gunakan saran commit message di `docs/TASKS.md` sebagai acuan, sesuaikan jika perubahan nyata berbeda.
+- Jangan commit `local.properties`, token, atau file rahasia. Periksa `git status` sebelum commit.
+- Jangan `git push` kecuali diminta.
+
+Contoh: `feat(cinema): implement deterministic procedural schedule engine`
 
 ## Checklist sebelum selesai
 
-Jalankan checklist ini pada setiap perubahan UI, lalu tulis hasilnya singkat di akhir jawaban:
-
-- [ ] Tidak ada warna, ukuran font, atau dp hardcode di composable screen
-- [ ] Mengikuti palet, font, dan scale dari DESIGN_SYSTEM.md
-- [ ] Loading, error, empty, dan content sudah ada
-- [ ] Preview (`@Preview`) tersedia untuk komponen baru, minimal light dan dark
-- [ ] Tidak ada elemen dari daftar larangan di atas
-- [ ] Tap target, contentDescription, dan font scaling sudah dicek
-- [ ] Microcopy dalam Bahasa Indonesia, spesifik, dan tidak generik
+- [ ] Layer `domain` tidak mengimpor library framework
+- [ ] Semua dependency lewat constructor dan interface, terdaftar di modul Koin
+- [ ] DTO, Entity, Domain Model terpisah dengan mapper eksplisit
+- [ ] Error memakai `AppResult` / `AppError`, tidak ada exception mentah ke UI
+- [ ] Contract (State, Action, Effect) dipakai, tidak ada logic bisnis di composable
+- [ ] Tidak ada token atau secret di kode, log, atau commit
+- [ ] File ditempatkan sesuai struktur layer dan subfolder fitur
+- [ ] Test (fake) ditambahkan atau diperbarui
+- [ ] Dokumen (`ARCHITECTURE.md`, `DATA_LAYER.md`, `TASKS.md`) diperbarui bila ada perubahan keputusan, dan task yang selesai dicentang
+- [ ] Commit message valid menurut Conventional Commits
 
 ## Bila ragu
 
-Pilih opsi yang lebih sederhana dan lebih konsisten dengan design system, bukan opsi yang lebih "wah". Jika butuh keputusan desain baru yang belum ada di DESIGN_SYSTEM.md (warna baru, komponen baru), usulkan dulu beserta alasannya, lalu tambahkan ke dokumen tersebut sebelum dipakai di kode.
+Pilih solusi yang lebih sederhana dan mudah di-test. Jangan menambah abstraksi baru (base class, generic wrapper, layer tambahan) kecuali ada masalah nyata yang diselesaikannya, dan jelaskan alasannya di jawaban.

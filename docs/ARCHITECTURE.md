@@ -70,8 +70,8 @@ shared/src/
 │   ├── App.kt                          # Root Compose entry point & AppTheme
 │   ├── core/                           # Komponen fondasi bersama & utilitas
 │   │   ├── data/
-│   │   │   ├── network/                # HttpClientFactory, Ktor engine expect/actual
-│   │   │   └── storage/                # DataStoreFactory, storage path expect/actual
+│   │   │   ├── network/                # HttpClientFactory, Secrets.kt.template (Secrets.kt gitignored), Ktor engine expect/actual
+│   │   │   └── storage/                # DataStoreFactory, storage path expect/actual, AndroidContextProvider
 │   │   ├── domain/
 │   │   │   └── model/                  # AppResult, AppError
 │   │   └── presentation/
@@ -233,7 +233,7 @@ Penggunaan `expect / actual` dibatasi **hanya** pada dua komponen di mana Kotlin
 | **2. DataStore File Path** | `expect fun createDataStorePath(fileName: String): String` | `context.filesDir.resolve(fileName).absolutePath` | `NSFileManager.defaultManager.URLForDirectory(...).path + "/$fileName"` | Android memerlukan `Context`, iOS memerlukan `NSDocumentDirectory`. |
 
 ### Komponen yang DILARANG Menggunakan `expect / actual`:
-- **API Key**: Tidak menggunakan `PlatformConfig`. Nilai disuntikkan saat compile-time via `BuildKonfig.TMDB_API_KEY`.
+- **API Key / Token**: Dilarang menggunakan expect/actual maupun runtime file reader. Nilai token TMDB diakses via `Secrets.TMDB_ACCESS_TOKEN` di `commonMain` yang di-gitignore, dengan template aman `Secrets.kt.template`.
 - **Haptic Feedback**: Menggunakan `LocalHapticFeedback.current` bawaan Compose Multiplatform di `commonMain`.
 - **Fitur Eksternal Platform**: Fitur seperti *Simpan Gambar Tiket*, *Tambah ke Kalender*, dan *Bagikan* dikeluarkan dari scope (ditetapkan sebagai *Future Work*) agar tidak menambah kompleksitas platform-specific.
 
@@ -245,15 +245,11 @@ Penggunaan `expect / actual` dibatasi **hanya** pada dua komponen di mana Kotlin
    `https://api.themoviedb.org/3/`
 2. **Pencegahan Kebocoran API Key pada Log**:
    - Autentikasi utama menggunakan header `Authorization: Bearer <TMDB_ACCESS_TOKEN>`.
-   - Logging Ktor disanitasi: header `Authorization` disensor (`sanitizeHeader { it == HttpHeaders.Authorization }`), dan logging dimatikan pada release build.
+   - Logging Ktor disanitasi: header `Authorization` disensor (`sanitizeHeader { it == HttpHeaders.Authorization }`), dan level logging dikendalikan parameter `isDebug: Boolean` yang dipropagasikan dari platform entry point (`MainActivity.kt` di Android via `FLAG_DEBUGGABLE`, dan `ViewController.kt` di iOS via `Platform.isDebugBinary`). Pada release build, logging otomatis menjadi `LogLevel.NONE`.
 3. **Sumber Konfigurasi Aman**:
-   - Pengembang mengisi kunci pada `local.properties`:
-     ```properties
-     tmdb.api.key=YOUR_API_KEY
-     tmdb.access.token=YOUR_BEARER_TOKEN
-     ```
-   - Plugin `BuildKonfig` membaca file tersebut saat kompilasi dan membangkitkan objek `BuildKonfig.TMDB_ACCESS_TOKEN` di `commonMain`.
-   - File `local.properties.template` disediakan di git, sedangkan `local.properties` masuk ke `.gitignore`.
+   - Amper 0.13 belum mendukung plugin build Gradle seperti `BuildKonfig` maupun task kustom untuk code generation multiplatform.
+   - Oleh karena itu, rahasia dikelola melalui file Kotlin `Secrets.kt` di `shared/src/org/ariqhikari/movietix/core/data/network/Secrets.kt` yang didaftarkan ke `.gitignore`.
+   - File template `Secrets.kt.template` disediakan di repository git. Pengembang menyalin template ini ke `Secrets.kt` dan mengisi token Bearer TMDB mereka.
 
 ---
 
@@ -262,3 +258,12 @@ Penggunaan `expect / actual` dibatasi **hanya** pada dua komponen di mana Kotlin
 Untuk mencegah ketidakkonsistenan data (kursi terpesan tetapi tiket gagal disimpan), proses checkout diatur oleh Use Case komposit:
 - `ConfirmBookingUseCase` menjalankan reservasi kursi terlebih dahulu, disusul penyimpanan tiket.
 - Jika penyimpanan tiket gagal, Use Case otomatis mengeksekusi kompensasi rollback (`releaseSeats`) untuk membatalkan reservasi kursi. Detail lengkap didokumentasikan di [docs/DATA_LAYER.md](file:///Users/ariqhikari/Projects/MovieTix/docs/DATA_LAYER.md).
+
+---
+
+## 9. Catatan Arsitektur & Technical Debt
+
+- **AndroidContextProvider (Technical Debt)**:  
+  Karena Amper belum mendukung library context initialization otomatis (seperti `androidx.startup`) pada modul multiplatform, `Context` Android diinisialisasi secara eksplisit melalui `AndroidContextProvider.init(this)` di `MainActivity.onCreate` sebelum memanggil `startMovieTixKoin()`. Pendekatan ini dicatat sebagai technical debt untuk dievaluasi ulang ketika Amper atau Koin menyediakan context provider otomatis multiplatform.
+- **Koin Multiplatform Context**:  
+  Inisialisasi Koin menggunakan `KoinPlatformTools.defaultContext()` di `KoinInit.kt` untuk memastikan kompatibilitas penuh antara Android JVM dan Kotlin/Native (iOS).

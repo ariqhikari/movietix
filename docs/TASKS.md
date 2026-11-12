@@ -20,27 +20,32 @@ Menyiapkan *version catalog* lengkap, mengonfigurasi Koin DI, Ktor Client HTTPS 
 - [x] **0.1 Setup Version Catalog & Modul Build**
   - [x] Tambahkan dependensi Koin, Ktor, DataStore, Coil 3, DateTime, Serialization, dan QR Code ke `libs.versions.toml`.
   - [x] Perbarui `shared/module.yaml`, `androidApp/module.yaml`, dan `iosApp/module.yaml` agar mengenali dependensi baru.
-  - [x] Konfigurasi `local.properties.template` dan mekanisme token `tmdbAccessToken()` expect/actual.
-  - *Commit*: `build(deps): add koin ktor datastore and coil to version catalog`
+  - [x] Perbarui dependensi ke versi stabil terbaru (Ktor 3.6.1, Koin 4.2.2, DataStore 1.3.0, Coil 3.6.3, Coroutines 1.11.0, Serialization 1.13.0, DateTime 0.8.0, Navigation Compose 2.10.0, QRose 1.3.1, Turbine 1.2.1).
+  - [x] Migrasikan mekanisme token TMDB dari runtime file/expect-actual menjadi statis via `Secrets.TMDB_ACCESS_TOKEN` di `core/data/network/Secrets.kt` (gitignored) dengan template `Secrets.kt.template`.
+  - *Commit*: `build(deps): update dependencies to latest stable versions`
 - [x] **0.2 Desain Sistem & Resource Asset**
-  - [x] Unduh font `Outfit` dan `Plus Jakarta Sans` ke `shared/composeResources/font/`.
-  - [x] Implementasikan palet warna `MovieTixColors` (`light-primary` `#825000`, `state-error` `#FF6B6B`) dan `MovieTixTypography` di `core/presentation/theme/`.
-  - [x] Buat kerangka `MovieTixTheme` yang mendukung status bar edge-to-edge.
-  - *Commit*: `style(design-system): implement color tokens typography and theme`
+  - [x] Bundel font `Outfit` dan single variable font `plusjakartasans_variable.ttf` (dengan `FontVariation.weight`) di `shared/composeResources/font/` beserta lisensi `OFL_Outfit.txt` dan `OFL_PlusJakartaSans.txt`.
+  - [x] Implementasikan palet warna `MovieTixColors` dengan verifikasi WCAG AA script (`light-primary` `#825000`, `light-secondary` `#A34400`, `cinema-primary-container` `#362103`, `state-error` `#FF6B6B`), seat border, dan text hint tokens.
+  - [x] Tambahkan token tipografi `labelMono()` (16sp/20sp Bold, tracking +1.0sp).
+  - [x] Buat kerangka `MovieTixTheme` dan `ThemePreviewPlaceholder` dengan penanganan system insets (`safeDrawingPadding`).
+  - *Commit*: `style(design-system): use variable font with font variations and add ofl licenses`
 - [x] **0.3 Ktor Networking & Error Handling Core**
   - [x] Deklarasikan `expect fun getHttpEngine(): HttpClientEngine` di `core/data/network/`.
   - [x] Implementasikan `actual` di `src@android` (OkHttp) dan `src@ios` (Darwin).
   - [x] Buat `HttpClientFactory` dengan base URL `https://api.themoviedb.org/3/`, header Bearer token, dan sanitasi logging.
-  - [x] Definisikan sealed class `AppResult<T>` dan hirarki `AppError` di `core/domain/model/`.
-  - *Commit*: `feat(core): setup ktor http client and appresult error handling`
+  - [x] Teruskan flag `isDebug` dari platform entry point (`FLAG_DEBUGGABLE` di Android, `Platform.isDebugBinary` di iOS) agar logging Level.NONE pada release build.
+  - [x] Definisikan sealed interface `AppResult<T>` dan hierarki `AppError` di `core/domain/model/`.
+  - *Commit*: `feat(core): propagate platform debug flag to http client logging`
 - [x] **0.4 Local DataStore Storage Core**
   - [x] Deklarasikan `expect fun createDataStorePath(fileName: String): String` di `core/data/storage/`.
   - [x] Implementasikan `actual` untuk Android (`context.filesDir`) dan iOS (`NSDocumentDirectory`).
   - [x] Buat factory instansiasi `DataStore<Preferences>` multiplatform.
+  - [x] Catat `AndroidContextProvider` sebagai technical debt sementara karena keterbatasan konteks otomatis di Amper.
   - *Commit*: `feat(core): configure multiplatform datastore factory`
 - [x] **0.5 Dependency Injection (Koin)**
   - [x] Buat `CoreModule.kt` (HTTP client, DataStore, Dispatchers).
-  - [x] Buat fungsi inisialisasi Koin `startMovieTixKoin()` yang dipanggil dari `MainActivity` dan `ViewController`.
+  - [x] Buat fungsi inisialisasi Koin `startMovieTixKoin(isDebug = ...)` yang dipanggil dari `MainActivity` dan `ViewController`.
+  - [x] Gunakan `KoinPlatformTools.defaultContext()` untuk kompatibilitas native iOS Koin.
   - *Commit*: `feat(di): setup core koin module and entry points`
 
 > **Definition of Done (DoD) Fase 0:**  

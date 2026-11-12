@@ -15,7 +15,7 @@ MovieTix memanfaatkan TMDB API v3 sebagai sumber data katalog film.
 - **Autentikasi Aman**: Menggunakan Header HTTP standar:  
   `Authorization: Bearer <TMDB_READ_ACCESS_TOKEN>`  
   Pendekatan Bearer token dipilih dibandingkan query parameter agar token API tidak terekspos pada URL request, riwayat proxy, maupun log jaringan.
-- **Sumber Kunci**: Nilai token dibaca saat proses build dari `local.properties` dan disuntikkan ke dalam `BuildKonfig.TMDB_ACCESS_TOKEN`.
+- **Sumber Kunci**: Nilai token dibaca secara statis dari objek `Secrets.TMDB_ACCESS_TOKEN` di `core/data/network/Secrets.kt` (file ter-gitignore). File template aman `Secrets.kt.template` disediakan di repositori git untuk onboarding pengembang baru. Parameter `isDebug` dipropagasikan dari platform entry point (`MainActivity.kt` di Android dan `ViewController.kt` di iOS) ke `HttpClientFactory`, mematikan logging pada release build.
 
 ### 1.2 Endpoints TMDB yang Digunakan
 

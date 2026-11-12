@@ -201,7 +201,7 @@ shared/src/
 Inisialisasi DI dibagi per modul terstruktur:
 1. **`coreModule`**:
    - `single { getHttpEngine() }` (platform-specific via expect/actual)
-   - `single { createHttpClient(get(), BuildKonfig.TMDB_ACCESS_TOKEN) }`
+   - `single { createHttpClient(get(), Secrets.TMDB_ACCESS_TOKEN, isDebug = isDebug) }`
    - `single { createDataStore() }`
    - `single { Dispatchers.IO }`
 2. **`movieModule`**:
@@ -239,8 +239,8 @@ Inisialisasi DI dibagi per modul terstruktur:
 
 ### 6.1 TMDB Endpoints & Keamanan Jaringan
 - Base URL: `https://api.themoviedb.org/3/`
-- Autentikasi: `Authorization: Bearer <TMDB_ACCESS_TOKEN>` (dibaca via `BuildKonfig.TMDB_ACCESS_TOKEN`).
-- Header Authorization disanitasi dari log Ktor agar tidak bocor di terminal.
+- Autentikasi: `Authorization: Bearer <TMDB_ACCESS_TOKEN>` (dibaca via `Secrets.TMDB_ACCESS_TOKEN` dari file `Secrets.kt` yang di-gitignore).
+- Header Authorization disanitasi dari log Ktor agar tidak bocor di terminal, dan logging dimatikan pada release build.
 
 ### 6.2 Procedural Deterministic Engine
 - Seed dibentuk dari: `seed = abs("$movieId-$dateStr-$cinemaId".hashCode())`.
@@ -399,7 +399,7 @@ Scope harus mencerminkan area arsitektur MovieTix:
 |---|---|---|
 | **Perbedaan Perilaku Ktor Engine di iOS** | iOS Darwin engine memiliki aturan SSL strict dan App Transport Security (ATS). | Konfigurasi Darwin Engine secara eksplisit di `src@ios` dengan `configureRequest { setAllowsCellularAccess(true) }` dan hanya menggunakan endpoint HTTPS resmi TMDB. |
 | **Path File DataStore di iOS Sandbox** | `NSDocumentDirectory` di iOS dapat berbeda struktur path-nya tergantung simulator/device. | Gunakan fungsi platform resmi `NSFileManager.defaultManager.URLForDirectory` dengan `NSDocumentDirectory` untuk memastikan lokasi file selalu valid dan diizinkan sistem. |
-| **Amper BuildKonfig Integration** | Amper toolchain sedang berkembang; plugin pihak ketiga mungkin memerlukan sintaks modul khusus. | Menyiapkan template fallback gradle task atau custom code generator bila plugin gradle buildkonfig standar memerlukan deklarasi tambahan di Amper `module.yaml`. |
+| **Amper Token Secrets Integration** | Amper 0.13 toolchain belum mendukung plugin code generation Gradle kustom seperti BuildKonfig. | Menggunakan file Kotlin `Secrets.kt` di `commonMain` yang didaftarkan ke `.gitignore`, dengan template `Secrets.kt.template` di repository git. Bebas overhead runtime dan zero dependency eksternal. |
 | **Rate Limit / Kegagalan API TMDB** | Kuota API habis atau koneksi internet pengguna terputus. | Terapkan fallback caching di memory layer, pesan error ramah pengguna dengan tombol *"Coba Lagi"*, dan offline ticket access via DataStore. |
 
 ---
@@ -408,8 +408,8 @@ Scope harus mencerminkan area arsitektur MovieTix:
 
 Berikut adalah beberapa hal teknis dan produk yang masih terbuka untuk dievaluasi sebelum fase implementasi kode:
 
-1. **Integrasi BuildKonfig di Toolchain Amper**:
-   - Starter project saat ini menggunakan Amper (`module.yaml` dan wrapper `./kotlin`). Amper memiliki cara deklarasi plugin yang berbeda dari Gradle murni. Bila plugin `com.codingfeline.buildkonfig` memerlukan interop Gradle, apakah tim sepakat membungkus pembacaan `local.properties` via custom Kotlin script generator sederhana di `build/generated` atau menggunakan konfigurasi Amper `settings`?
+1. **AndroidContextProvider (Technical Debt)**:
+   - Amper saat ini belum mendukung mekanisme auto context provider multiplatform (misal `androidx.startup`). Context Android diinisialisasi secara eksplisit di `MainActivity.onCreate` melalui `AndroidContextProvider.init(this)`. Dicatat sebagai technical debt untuk dievaluasi ulang bila tooling Amper / Koin berkembang.
 2. **Kapasitas Cache Offline Gambar Coil 3**:
    - Mengingat poster film dan foto pemeran diambil dari TMDB, apakah perlu ditetapkan batas kuota disk cache Coil (misal maksimal 100 MB) pada perangkat mobile agar tidak membebani memori lokal pengguna?
 3. **Format Identifikasi Booking Code**:
