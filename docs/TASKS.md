@@ -95,11 +95,11 @@ Mengimplementasikan integrasi TMDB API untuk memuat film *Now Playing*, *Popular
 Menampilkan informasi mendalam mengenai film yang dipilih: backdrop hero resolusi tinggi, sinopsis lengkap, daftar genre, durasi, rating ulasan, carousel foto pemeran (*cast*), dan tautan trailer video resmi.
 
 ### Checklist Tugas:
-- [ ] **2.1 Data & Domain Layer Detail Film**
-  - [ ] Tambahkan endpoint TMDB `/movie/{id}`, `/movie/{id}/credits`, dan `/movie/{id}/videos` ke `TmdbApiService`.
-  - [ ] Definisikan DTO `MovieDetailDto`, `CreditsDto`, `CastDto`, `VideosDto`.
-  - [ ] Implementasikan mapper domain model `MovieDetail`, `CastMember`, `TrailerVideo`.
-  - [ ] Perluas `MovieRepositoryImpl` dan buat `GetMovieDetailUseCase`.
+- [x] **2.1 Data & Domain Layer Detail Film**
+  - [x] Tambahkan endpoint TMDB `/movie/{id}`, `/movie/{id}/credits`, dan `/movie/{id}/videos` ke `TmdbApiService`.
+  - [x] Definisikan DTO `MovieDetailDto`, `CreditsDto`, `CastDto`, `VideosDto`.
+  - [x] Implementasikan mapper domain model `MovieDetail`, `CastMember`, `TrailerVideo`.
+  - [x] Perluas `MovieRepositoryImpl` dan buat `GetMovieDetailUseCase`.
   - *Commit*: `feat(movie): add movie detail credits and videos api integration`
 - [ ] **2.2 Presentation Layer Detail Film**
   - [ ] Rancang kontrak `DetailContract` (`State`, `Action`, `Effect`) di `presentation/movie/detail/`.

@@ -4,8 +4,11 @@ import io.ktor.client.HttpClient
 import io.ktor.client.call.body
 import io.ktor.client.request.get
 import io.ktor.client.request.parameter
+import org.ariqhikari.movietix.data.movie.remote.dto.CreditsDto
 import org.ariqhikari.movietix.data.movie.remote.dto.GenreListResponseDto
+import org.ariqhikari.movietix.data.movie.remote.dto.MovieDetailDto
 import org.ariqhikari.movietix.data.movie.remote.dto.MovieResponseDto
+import org.ariqhikari.movietix.data.movie.remote.dto.VideosDto
 
 class TmdbApiService(private val client: HttpClient) {
 
@@ -47,6 +50,33 @@ class TmdbApiService(private val client: HttpClient) {
 
     suspend fun getGenres(language: String = "id-ID"): GenreListResponseDto {
         return client.get("genre/movie/list") {
+            parameter("language", language)
+        }.body()
+    }
+
+    suspend fun getMovieDetail(
+        movieId: Int,
+        language: String = "id-ID"
+    ): MovieDetailDto {
+        return client.get("movie/$movieId") {
+            parameter("language", language)
+        }.body()
+    }
+
+    suspend fun getMovieCredits(
+        movieId: Int,
+        language: String = "id-ID"
+    ): CreditsDto {
+        return client.get("movie/$movieId/credits") {
+            parameter("language", language)
+        }.body()
+    }
+
+    suspend fun getMovieVideos(
+        movieId: Int,
+        language: String = "id-ID"
+    ): VideosDto {
+        return client.get("movie/$movieId/videos") {
             parameter("language", language)
         }.body()
     }
