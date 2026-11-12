@@ -38,9 +38,9 @@ Menyiapkan *version catalog* lengkap, mengonfigurasi Koin DI, Ktor Client HTTPS 
   - [x] Implementasikan `actual` untuk Android (`context.filesDir`) dan iOS (`NSDocumentDirectory`).
   - [x] Buat factory instansiasi `DataStore<Preferences>` multiplatform.
   - *Commit*: `feat(core): configure multiplatform datastore factory`
-- [ ] **0.5 Dependency Injection (Koin)**
-  - [ ] Buat `CoreModule.kt` (HTTP client, DataStore, Dispatchers).
-  - [ ] Buat fungsi inisialisasi Koin `initKoin()` yang dipanggil dari `MainActivity` dan `ViewController`.
+- [x] **0.5 Dependency Injection (Koin)**
+  - [x] Buat `CoreModule.kt` (HTTP client, DataStore, Dispatchers).
+  - [x] Buat fungsi inisialisasi Koin `startMovieTixKoin()` yang dipanggil dari `MainActivity` dan `ViewController`.
   - *Commit*: `feat(di): setup core koin module and entry points`
 
 > **Definition of Done (DoD) Fase 0:**  
