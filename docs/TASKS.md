@@ -33,10 +33,10 @@ Menyiapkan *version catalog* lengkap, mengonfigurasi Koin DI, Ktor Client HTTPS 
   - [x] Buat `HttpClientFactory` dengan base URL `https://api.themoviedb.org/3/`, header Bearer token, dan sanitasi logging.
   - [x] Definisikan sealed class `AppResult<T>` dan hirarki `AppError` di `core/domain/model/`.
   - *Commit*: `feat(core): setup ktor http client and appresult error handling`
-- [ ] **0.4 Local DataStore Storage Core**
-  - [ ] Deklarasikan `expect fun createDataStorePath(fileName: String): String` di `core/data/storage/`.
-  - [ ] Implementasikan `actual` untuk Android (`context.filesDir`) dan iOS (`NSDocumentDirectory`).
-  - [ ] Buat factory instansiasi `DataStore<Preferences>` multiplatform.
+- [x] **0.4 Local DataStore Storage Core**
+  - [x] Deklarasikan `expect fun createDataStorePath(fileName: String): String` di `core/data/storage/`.
+  - [x] Implementasikan `actual` untuk Android (`context.filesDir`) dan iOS (`NSDocumentDirectory`).
+  - [x] Buat factory instansiasi `DataStore<Preferences>` multiplatform.
   - *Commit*: `feat(core): configure multiplatform datastore factory`
 - [ ] **0.5 Dependency Injection (Koin)**
   - [ ] Buat `CoreModule.kt` (HTTP client, DataStore, Dispatchers).
