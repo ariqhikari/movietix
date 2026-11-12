@@ -200,7 +200,7 @@ class HomeViewModel(
             is AppError.Network.NoInternet -> "Periksa koneksi internet Anda dan coba lagi."
             is AppError.Network.Timeout -> "Koneksi terputus. Silakan coba lagi."
             is AppError.Network.ServerError -> "Terjadi kendala pada server (${error.code})."
-            is AppError.Network.Unauthorized -> "Akses tidak diizinkan."
+            is AppError.Network.Unauthorized -> "Akses tidak diizinkan. Periksa konfigurasi token TMDB Anda."
             is AppError.Storage.ReadFailed,
             is AppError.Storage.WriteFailed -> "Gagal memuat data lokal."
             is AppError.Booking.SeatAlreadyOccupied,
