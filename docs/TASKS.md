@@ -123,11 +123,11 @@ Menampilkan informasi mendalam mengenai film yang dipilih: backdrop hero resolus
 Membangun *procedural engine* deterministik untuk jadwal bioskop, pemilih tanggal horizontal, daftar bioskop & jam tayang, serta peta kursi interaktif dengan status *Available*, *Selected*, dan *Occupied*.
 
 ### Checklist Tugas:
-- [ ] **3.1 Procedural Schedule Engine**
-  - [ ] Buat kelas `ProceduralScheduleEngine` di `data/cinema/local/`.
-  - [ ] Implementasikan algoritma hash `seed = abs("$movieId-$dateStr-$cinemaId".hashCode())`.
-  - [ ] Hasilkan daftar bioskop (XXI, CGV, Cinepolis), tipe studio (IMAX, Velvet, Regular), jam tayang, dan harga tiket.
-  - [ ] Hasilkan pre-occupied seats (kursi yang telah diisi penonton lain) secara deterministik.
+- [x] **3.1 Procedural Schedule Engine**
+  - [x] Buat kelas `ProceduralScheduleEngine` di `data/cinema/local/`.
+  - [x] Implementasikan algoritma hash `seed = abs("$movieId-$dateStr-$cinemaId".hashCode())`.
+  - [x] Hasilkan daftar bioskop (XXI, CGV, Cinepolis), tipe studio (IMAX, Velvet, Regular), jam tayang, dan harga tiket.
+  - [x] Hasilkan pre-occupied seats (kursi yang telah diisi penonton lain) secara deterministik.
   - *Commit*: `feat(cinema): implement deterministic procedural schedule engine`
 - [ ] **3.2 Repository Jadwal & Integrasi DataStore**
   - [ ] Definisikan kontrak `CinemaScheduleRepository` di `domain/cinema/repository/`.
