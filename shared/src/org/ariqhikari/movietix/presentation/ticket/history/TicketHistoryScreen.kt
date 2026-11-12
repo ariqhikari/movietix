@@ -40,6 +40,7 @@ import androidx.compose.ui.semantics.role
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -191,6 +192,39 @@ fun TicketHistoryScreen(
                                 TicketHistoryCard(
                                     item = item,
                                     onClick = { onAction(Action.TicketClicked(item.ticket.bookingCode)) }
+                                )
+                            }
+                        }
+
+                        // TMDB & Portfolio Simulation Attribution Footer
+                        item(key = "footer_attribution") {
+                            Column(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .padding(vertical = Spacing.md),
+                                horizontalAlignment = Alignment.CenterHorizontally
+                            ) {
+                                Text(
+                                    text = "MovieTix Portfolio Project",
+                                    style = MaterialTheme.typography.labelSmall,
+                                    fontWeight = FontWeight.Bold,
+                                    color = MovieTixColors.CinemaTextTertiary
+                                )
+                                Spacer(modifier = Modifier.height(4.dp))
+                                Text(
+                                    text = "This product uses the TMDB API but is not endorsed or certified by TMDB.",
+                                    style = MaterialTheme.typography.labelSmall,
+                                    color = MovieTixColors.CinemaTextTertiary,
+                                    textAlign = TextAlign.Center,
+                                    fontSize = 10.sp
+                                )
+                                Spacer(modifier = Modifier.height(2.dp))
+                                Text(
+                                    text = "Jadwal dan transaksi adalah simulasi demonstrasi portofolio.",
+                                    style = MaterialTheme.typography.labelSmall,
+                                    color = MovieTixColors.CinemaTextTertiary,
+                                    textAlign = TextAlign.Center,
+                                    fontSize = 10.sp
                                 )
                             }
                         }
