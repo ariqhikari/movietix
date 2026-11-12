@@ -157,12 +157,12 @@ Membangun *procedural engine* deterministik untuk jadwal bioskop, pemilih tangga
 Mengimplementasikan alur konfirmasi pesanan dan simulasi transaksi pembayaran tanpa gateway asli, lengkap dengan pemilihan metode pembayaran fiktif, animasi loading proses, dan penanganan status berhasil/gagal.
 
 ### Checklist Tugas:
-- [ ] **4.1 Domain & State Machine Pembayaran**
-  - [ ] Definisikan enum `PaymentMethod` (BCA Virtual Account, GoPay, OVO, Kartu Debit/Kredit).
-  - [ ] Definisikan domain model `Ticket`, `TicketStatus` (ACTIVE, EXPIRED, CANCELLED), dan `PaymentResult` di `domain/ticket/model/` dan `domain/booking/model/`.
-  - [ ] Buat `PaymentGateway` interface dan `DummyPaymentGateway` di `data/booking/remote/` (dengan delay tersimulasi dan injeksi clock/dispatcher).
-  - [ ] Buat `BookingCodeGenerator` ("MTX-" + 6 digit) dan `QrPayloadFactory` (format "MOVIETIX:v1:...").
-  - [ ] Implementasikan `ConfirmBookingUseCase` dengan alur 4 langkah (reserveSeats -> processPayment -> saveTicket -> success) beserta proteksi `withContext(NonCancellable)` pada kompensasi `releaseSeats`.
+- [x] **4.1 Domain & State Machine Pembayaran**
+  - [x] Definisikan enum `PaymentMethod` (BCA Virtual Account, GoPay, OVO, Kartu Debit/Kredit).
+  - [x] Definisikan domain model `Ticket`, `TicketStatus` (ACTIVE, EXPIRED, CANCELLED), dan `PaymentResult` di `domain/ticket/model/` dan `domain/booking/model/`.
+  - [x] Buat `PaymentGateway` interface dan `DummyPaymentGateway` di `data/booking/remote/` (dengan delay tersimulasi dan injeksi clock/dispatcher).
+  - [x] Buat `BookingCodeGenerator` ("MTX-" + 6 digit) dan `QrPayloadFactory` (format "MOVIETIX:v1:...").
+  - [x] Implementasikan `ConfirmBookingUseCase` dengan alur 4 langkah (reserveSeats -> processPayment -> saveTicket -> success) beserta proteksi `withContext(NonCancellable)` pada kompensasi `releaseSeats`.
   - *Commit*: `feat(booking): implement payment domain models gateway and confirm booking use case`
 - [ ] **4.2 Data Layer & Persistence Tiket**
   - [ ] Definisikan `TicketEntity` dan `TicketHistoryContainer` (dengan `schema_version`) di `data/ticket/local/`.

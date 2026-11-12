@@ -10,10 +10,12 @@ data class BookingOrder(
     val cinemaId: String,
     val cinemaName: String,
     val studioName: String,
+    val studioType: String = "REGULAR",
     val showtime: String,
     val date: String,
     val selectedSeats: List<String>,
     val pricePerSeat: Long,
     val serviceFee: Long,
-    val totalPrice: Long
+    val totalPrice: Long,
+    val posterUrl: String? = null
 )
