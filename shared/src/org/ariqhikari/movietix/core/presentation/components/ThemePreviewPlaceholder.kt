@@ -11,6 +11,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.safeDrawingPadding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -52,6 +53,7 @@ fun ThemePreviewPlaceholder() {
             modifier = Modifier
                 .fillMaxSize()
                 .background(MaterialTheme.colorScheme.background)
+                .safeDrawingPadding()
                 .verticalScroll(rememberScrollState())
                 .padding(Spacing.md)
         ) {
@@ -171,7 +173,7 @@ fun ThemePreviewPlaceholder() {
                         label = "C4",
                         statusText = "Tersedia",
                         bg = MovieTixColors.CinemaSeatAvailable,
-                        border = MovieTixColors.CinemaSurfaceBorder,
+                        border = MovieTixColors.CinemaSeatBorder,
                         glyph = null
                     )
                     SeatSample(

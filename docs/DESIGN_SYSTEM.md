@@ -39,19 +39,24 @@ Ambang batas WCAG AA:
 | `cinema-surface-card` | `#1A202E` | Surface tingkat 2 (Elevated card, Bottom Sheet) | Kontras vs `#0B0E14` = **1.56:1** | Tonal Layering |
 | `cinema-surface-border` | `#2A3448` | Garis batas tipis kartu, divider & notch | 1dp stroke delimiter | Boundary Stroke |
 | `cinema-primary` | `#E5A93C` | Aksen utama (Amber Gold: CTA, waktu aktif) | vs `#0B0E14` = **9.26:1**<br>vs `#1A202E` = **7.81:1** | Pass AAA (All) |
-| `cinema-primary-variant`| `#C68B23` | State pressed pada elemen primary | vs `#0B0E14` = **7.08:1** | Pass AAA (All) |
+| `cinema-primary-variant`| `#C68B23` | State pressed pada elemen primary | vs `#0B0E14` = **7.08:1**<br>vs `#120C02` = **6.60:1** | Pass AAA (All) |
+| `cinema-primary-container` | `#362103` | Kontainer tonal aksen utama dark | vs `#F2F5FA` = **14.32:1**<br>vs `#E5A93C` = **7.51:1** | Pass AAA (All) |
 | `cinema-secondary` | `#F08C4A` | Aksen pelengkap (Neon Ember: badge genre) | vs `#0B0E14` = **7.87:1** | Pass AAA (All) |
 | `cinema-on-primary` | `#120C02` | Teks/ikon di atas warna emas `cinema-primary` | vs `#E5A93C` = **9.33:1** | Pass AAA (All) |
 | `cinema-text-primary` | `#F2F5FA` | Judul, harga, nama film, label penting | vs `#0B0E14` = **17.68:1**<br>vs `#1A202E` = **14.90:1** | Pass AAA (All) |
 | `cinema-text-secondary`| `#9AA7BC` | Sinopsis, info durasi, metadata film | vs `#0B0E14` = **7.94:1**<br>vs `#1A202E` = **6.69:1** | Pass AA (Normal) |
-| `cinema-text-tertiary` | `#63738A` | Label nonaktif, hint, seat disabled | vs `#0B0E14` = **4.00:1** | Pass AA (Large/UI) |
+| `cinema-text-tertiary` | `#63738A` | Label nonaktif, seat disabled | vs `#0B0E14` = **4.00:1** | Pass AA (Large/UI) |
+| `cinema-text-hint` | `#7E8EAA` | Placeholder input field & teks petunjuk | vs `#1A202E` = **4.92:1**<br>vs `#131822` = **5.85:1** | Pass AA (Normal) |
 | `cinema-seat-available`| `#222B3D` | Kursi tersedia (Background netral) | Border stroke `#3D4C69` | UI Component |
+| `cinema-seat-border` | `#3D4C69` | Garis tepi kursi tersedia | UI Component Delimiter | Boundary Stroke |
 | `cinema-seat-selected` | `#E5A93C` | Kursi dipilih user (Gold solid + glyph) | vs `#120C02` = **9.33:1** | Pass AAA |
 | `cinema-seat-occupied` | `#161B26` | Kursi terisi (Dark navy redup + ikon 'X') | Texture & Glyph khusus | Multi-modal |
 | `state-success` | `#2EC492` | Konfirmasi pembayaran sukses, status lunas | vs `#0B0E14` = **8.67:1** | Pass AAA (All) |
 | `state-error` | `#FF6B6B` | Pesan error, pembatalan, network fail | vs `#0B0E14` = **6.96:1**<br>vs `#1A202E` = **5.87:1** | Pass AA (Normal) |
 
-> **Perbaikan Penting Dark Theme**: Warna `state-error` diperbarui dari `#E5484D` (rasio lama 4.16:1 di atas card, gagal AA) menjadi **`#FF6B6B`** (Coral Red Vivid), sehingga mencapai rasio **5.87:1** di atas `cinema-surface-card` `#1A202E`, lolos mutlak WCAG AA untuk teks normal.
+> **Perbaikan Penting Dark Theme**: 
+> 1. Warna `state-error` diperbarui dari `#E5484D` (rasio lama 4.16:1 di atas card, gagal AA) menjadi **`#FF6B6B`** (Coral Red Vivid), sehingga mencapai rasio **5.87:1** di atas `cinema-surface-card` `#1A202E`, lolos mutlak WCAG AA untuk teks normal.
+> 2. `primaryContainer` pada dark theme dipetakan ke **`#362103`** (Deep Amber Container) dengan teks di atasnya `cinema-primary` (`#E5A93C`, rasio **7.51:1**) atau `cinema-text-primary` (`#F2F5FA`, rasio **14.32:1**), menyelesaikan kegagalan kontras token sebelumnya.
 
 ---
 
@@ -64,12 +69,17 @@ Ambang batas WCAG AA:
 | `light-surface-subtle` | `#EDF1F7` | Surface kontainer pencarian, input field | vs `#FFFFFF` = **1.14:1** | Tonal Layering |
 | `light-primary` | `#825000` | Aksen emas gelap untuk teks & CTA di light theme | vs `#FFFFFF` = **6.78:1**<br>vs `#F8F9FC` = **6.44:1**<br>vs `#EDF1F7` = **5.98:1** | Pass AA (Normal)<br>Pass AAA (Large) |
 | `light-on-primary` | `#FFFFFF` | Teks di atas tombol emas `#825000` | vs `#825000` = **6.78:1** | Pass AA (Normal) |
+| `light-secondary` | `#A34400` | Aksen pelengkap light (Terracotta / Burnt Amber) | vs `#FFFFFF` = **6.21:1**<br>vs `#F8F9FC` = **5.89:1**<br>vs `#EDF1F7` = **5.47:1** | Pass AA (Normal) |
 | `light-text-primary` | `#10141D` | Judul utama dan teks esensial | vs `#FFFFFF` = **18.42:1** | Pass AAA (All) |
 | `light-text-secondary` | `#526075` | Sinopsis dan metadata film | vs `#FFFFFF` = **6.39:1**<br>vs `#EDF1F7` = **5.63:1** | Pass AA (Normal) |
+| `light-text-hint` | `#5D6D82` | Placeholder input field & teks hint | vs `#FFFFFF` = **5.22:1**<br>vs `#EDF1F7` = **4.60:1** | Pass AA (Normal) |
 | `light-border` | `#D6DEEB` | Garis pembatas dan perforasi tiket | Subtle delimiter | UI Boundary |
+| `light-seat-border` | `#B0BDD0` | Garis tepi batas kursi mode terang | Subtle delimiter | UI Boundary |
 | `light-state-error` | `#C62828` | Teks dan icon error di tema terang | vs `#FFFFFF` = **5.62:1**<br>vs `#EDF1F7` = **4.96:1** | Pass AA (Normal) |
 
-> **Perbaikan Penting Light Theme**: Nilai `light-primary` diperbarui dari `#A66B0D` (rasio lama 4.44:1 di atas putih, gagal AA < 4.5:1) menjadi **`#825000`** (Amber Ochre Deep). Warna baru ini menghasilkan rasio kontras **6.78:1** di atas putih murni, **6.44:1** di atas background, dan **5.98:1** di atas surface subtle, sehingga lolos penuh WCAG AA untuk teks normal di seluruh variasi surface terang.
+> **Perbaikan Penting Light Theme**: 
+> 1. Nilai `light-primary` diperbarui dari `#A66B0D` (rasio lama 4.44:1 di atas putih, gagal AA < 4.5:1) menjadi **`#825000`** (Amber Ochre Deep). Warna baru ini menghasilkan rasio kontras **6.78:1** di atas putih murni, **6.44:1** di atas background, dan **5.98:1** di atas surface subtle, sehingga lolos penuh WCAG AA untuk teks normal di seluruh variasi surface terang.
+> 2. `light-secondary` didefinisikan secara khusus dengan **`#A34400`** (Warm Terracotta) menggantikan penggunaan token dark di tema terang, menghasilkan rasio **6.21:1** di atas putih murni dan **5.89:1** di atas background, lolos WCAG AA.
 
 ---
 
