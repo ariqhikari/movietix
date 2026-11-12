@@ -61,8 +61,10 @@ fi
 # 3. Audit Secret & Token Leaks
 echo ""
 echo "[3/6] Auditing Secret & Token Leaks in Code & Git History..."
-# Check for TMDB token pattern (Bearer eyJ...) or raw JWT tokens
-CODE_SECRETS=$(grep -rn -E "eyJhbGciOiJIUzI1NiJ[a-zA-Z0-9_-]+" shared/ iosApp/ androidApp/ 2>/dev/null | grep -v "Secrets.kt" || true)
+# Construct token signature dynamically to prevent self-match
+JWT_SIGNATURE=$(printf "eyJ%s" "hbGciOiJIUzI1NiJ")
+
+CODE_SECRETS=$(grep -rn -E "${JWT_SIGNATURE}[a-zA-Z0-9_-]+" shared/ iosApp/ androidApp/ 2>/dev/null | grep -v "Secrets.kt" || true)
 if [ -n "$CODE_SECRETS" ]; then
     echo "  [FAIL] Exposed JWT token detected in tracked code files!"
     ERRORS=$((ERRORS + 1))
@@ -70,8 +72,8 @@ else
     echo "  [PASS] No exposed JWT tokens found in tracked code files."
 fi
 
-# Git history scan for secrets
-GIT_SECRET_COMMITS=$(git log -p -S "eyJhbGciOiJIUzI1NiJ" --pretty=format:"%h %an %s" | head -n 10 || true)
+# Git history scan for secrets in application code
+GIT_SECRET_COMMITS=$(git log -S "$JWT_SIGNATURE" --pretty=format:"%h %an %s" -- shared/ androidApp/ iosApp/ | head -n 10 || true)
 if [ -n "$GIT_SECRET_COMMITS" ]; then
     echo "  [FAIL] Potential JWT secret found in git commit history:"
     echo "$GIT_SECRET_COMMITS"

@@ -17,3 +17,7 @@ xcuserdata
 local.properties
 shared/src/org/ariqhikari/movietix/core/data/network/Secrets.kt
 
+# Python bytecode
+__pycache__/
+*.py[cod]
+

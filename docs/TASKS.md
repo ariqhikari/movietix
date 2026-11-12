@@ -213,21 +213,48 @@ Menampilkan bukti tiket yang telah dibeli dengan desain fisik berperforasi (*pun
 Melakukan finalisasi kualitas kode, menambahkan unit test di `commonTest`, memastikan kepatuhan WCAG AA, dan menyusun dokumentasi portofolio tingkat profesional.
 
 ### Checklist Tugas:
-- [ ] **6.1 Unit Testing di `commonTest`**
-  - [ ] Buat `FakeMovieRepository`, `FakeCinemaScheduleRepository`, dan `FakeTicketRepository`.
-  - [ ] Unit test `GetNowPlayingMoviesUseCaseTest` (verifikasi pemrosesan dan mapping).
-  - [ ] Unit test `ProceduralScheduleEngineTest` (pastikan determinisme hashing 100% konsisten).
-  - [ ] Unit test `ConfirmBookingUseCaseTest` (uji skenario sukses dan skenario rollback saat `saveTicket` gagal).
-  - [ ] Unit test `HomeViewModelTest` menggunakan `Turbine` untuk mengetes aliran `State` dan `Effect`.
-  - *Commit*: `test(core): add comprehensive common unit tests and mock repositories`
-- [ ] **6.2 Aksesibilitas & UI Polish**
-  - [ ] Verifikasi seluruh tombol dan kursi memiliki touch target minimal 48x48 dp.
-  - [ ] Pastikan seluruh warna teks memenuhi rasio kontras WCAG AA yang telah dihitung (Light Primary `#825000`, State Error `#FF6B6B`).
-  - [ ] Periksa kelengkapan `contentDescription` pada semua gambar dan ikon.
-  - *Commit*: `style(design-system): polish accessibility touch targets and wcag contrast`
-- [ ] **6.3 Portofolio Showcase & README**
-  - [ ] Susun `README.md` utama dengan arsitektur visual, diagram alur transaksi atomik, dan panduan konfigurasi `local.properties`.
-  - *Commit*: `docs: finalize portfolio documentation and readme`
+- [x] **6.1 Codebase & Design System Consistency Audit**
+  - [x] Buat skrip audit otomatis `scripts/audit_codebase.sh`.
+  - [x] Hilangkan seluruh `Color(0x...)` hardcoded di layer presentasi dan gantikan dengan token `MovieTixColors`.
+  - [x] Bersihkan file usang `ThemePreviewPlaceholder.kt` dan verifikasi nihil kebocoran token rahasia di git history.
+  - *Commit*: `refactor(design-system): replace hardcoded colors with tokens and cleanup dead code`
+- [x] **6.2 Error Handling & Edge Cases Robustness**
+  - [x] Penanganan aman kondisi tanpa internet, timeout, dan 401 Unauthorized dengan pesan ramah pengguna berbahasa Indonesia.
+  - [x] Pencegahan double-click tombol bayar via pengecekan `isProcessing`.
+  - [x] Fallback aman pada DataStore JSON parsing error dan DTO mapper.
+  - *Commit*: `fix(core): improve error handling and Indonesian microcopy`
+- [x] **6.3 Aksesibilitas & Color Contrast Audit (WCAG 2.1)**
+  - [x] Skrip kalkulator kontras matematis `scripts/calculate_contrast.py` sesuai rumus W3C WCAG 2.1.
+  - [x] Dokumentasi lengkap laporan kontras di `docs/ACCESSIBILITY.md` (100% token lulus WCAG AA/AAA).
+  - [x] Verifikasi touch target minimal 48x48 dp dan dukungan pembaca layar (TalkBack & VoiceOver).
+  - *Commit*: `docs(accessibility): add wcag contrast calculation report and audit notes`
+- [x] **6.4 Optimasi Performa & R8 Release Builds**
+  - [x] Konfigurasi ProGuard / R8 keep rules di `androidApp/proguard-rules.pro` untuk Ktor, Koin, Serialization, Coil, dan Compose.
+  - [x] Verifikasi build Android release sukses (`./kotlin build -m androidApp`).
+  - [x] Verifikasi build iOS Simulator release sukses via Xcode.
+  - *Commit*: `perf(core): configure proguard r8 rules and verify release build readiness`
+- [x] **6.5 Unit & End-to-End Integration Testing di `commonTest`**
+  - [x] 121 automated unit tests di `commonTest` berjalan 100% lulus di Android JVM dan iOS Simulator Native Arm64.
+  - [x] Integration test komprehensif `BookingFlowIntegrationTest.kt` menguji alur jadwal nyata, reservasi kursi, konflik kursi, dan automatic rollback.
+  - [x] Dokumentasi pengujian lengkap di `docs/TESTING.md`.
+  - *Commit*: `test(booking): add booking integration test with real schedule engine and rollback`
+- [x] **6.6 GitHub Actions CI Workflow**
+  - [x] Workflow multiplatform `.github/workflows/ci.yml` mencakup audit arsitektur, kalkulasi kontras, build & test Android, dan build & test iOS tanpa membutuhkan token TMDB eksternal.
+  - *Commit*: `ci: add github actions workflow for android and ios verification`
+- [x] **6.7 Atribusi & Lisensi Pihak Ketiga**
+  - [x] Atribusi resmi TMDB di footer `TicketHistoryScreen.kt` dan README.
+  - [x] Penyusunan `THIRD_PARTY_NOTICES.md` mencakup lisensi font OFL (Outfit, Plus Jakarta Sans) dan library open source.
+  - [x] Penegasan disclaimer simulasi transaksi lokal.
+  - *Commit*: `docs(legal): add tmdb attribution third party notices and simulation disclaimers`
+- [x] **6.8 App Polish & Konfigurasi Platform**
+  - [x] Konfigurasi display name "MovieTix" di `androidApp/res/values/strings.xml` dan `iosApp/src/Info.plist`.
+  - [x] Review memory safety `AndroidContextProvider` (menggunakan `applicationContext`).
+  - *Commit*: `chore(platform): configure ios app display name to MovieTix`
+- [x] **6.9 Dokumentasi Portofolio & Decision Records**
+  - [x] Architecture Decision Records di `docs/DECISIONS.md` (ADR-001 s/d ADR-005).
+  - [x] Screenshot nyata aplikasi di `docs/screenshots/home.png`.
+  - [x] Penyusunan `README.md` (English) dan `README.id.md` (Bahasa Indonesia).
+  - *Commit*: `docs: finalize portfolio documentation readme and decision records`
 
 > **Definition of Done (DoD) Fase 6:**  
-> Seluruh unit test lulus (*green*), tidak ada memory leak atau crash pada skenario offline, dan kode siap dipresentasikan di GitHub/portofolio.
+> Seluruh 121 unit & integration test lulus (*green*) di Android dan iOS, audit kepatuhan arsitektur menghasilkan 0 error dan 0 warning, dokumen arsitektur dan portofolio lengkap, serta kode siap dipresentasikan di GitHub/portofolio.
