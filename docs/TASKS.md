@@ -164,10 +164,10 @@ Mengimplementasikan alur konfirmasi pesanan dan simulasi transaksi pembayaran ta
   - [x] Buat `BookingCodeGenerator` ("MTX-" + 6 digit) dan `QrPayloadFactory` (format "MOVIETIX:v1:...").
   - [x] Implementasikan `ConfirmBookingUseCase` dengan alur 4 langkah (reserveSeats -> processPayment -> saveTicket -> success) beserta proteksi `withContext(NonCancellable)` pada kompensasi `releaseSeats`.
   - *Commit*: `feat(booking): implement payment domain models gateway and confirm booking use case`
-- [ ] **4.2 Data Layer & Persistence Tiket**
-  - [ ] Definisikan `TicketEntity` dan `TicketHistoryContainer` (dengan `schema_version`) di `data/ticket/local/`.
-  - [ ] Buat mapper antara `TicketEntity` dan domain `Ticket` dengan fallback aman untuk status dan metode pembayaran tak dikenal.
-  - [ ] Definisikan `TicketRepository` di `domain/ticket/repository/` dan implementasikan `TicketRepositoryImpl` di `data/ticket/repository/` (atomik, batas maksimal 50 tiket terbaru, pencegahan duplikasi kode booking, toleran terhadap JSON rusak).
+- [x] **4.2 Data Layer & Persistence Tiket**
+  - [x] Definisikan `TicketEntity` dan `TicketHistoryContainer` (dengan `schema_version`) di `data/ticket/local/`.
+  - [x] Buat mapper antara `TicketEntity` dan domain `Ticket` dengan fallback aman untuk status dan metode pembayaran tak dikenal.
+  - [x] Definisikan `TicketRepository` di `domain/ticket/repository/` dan implementasikan `TicketRepositoryImpl` di `data/ticket/repository/` (atomik, batas maksimal 50 tiket terbaru, pencegahan duplikasi kode booking, toleran terhadap JSON rusak).
   - *Commit*: `feat(ticket): implement ticket datastore storage and repository`
 - [ ] **4.3 Presentation Layer Checkout & Simulasi Pembayaran**
   - [ ] Rancang kontrak `CheckoutContract` (`State`, `Action`, `Effect`) di `presentation/booking/checkout/`.
