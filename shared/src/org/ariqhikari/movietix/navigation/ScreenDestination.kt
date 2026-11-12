@@ -53,4 +53,10 @@ sealed interface ScreenDestination {
         val totalPrice: Long,
         val posterUrl: String? = null
     ) : ScreenDestination
+
+    @Serializable
+    data object TicketHistory : ScreenDestination
+
+    @Serializable
+    data class TicketDetail(val bookingCode: String) : ScreenDestination
 }

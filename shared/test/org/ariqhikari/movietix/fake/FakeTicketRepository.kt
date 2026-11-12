@@ -11,12 +11,22 @@ import org.ariqhikari.movietix.domain.ticket.repository.TicketRepository
 class FakeTicketRepository : TicketRepository {
     private val tickets = MutableStateFlow<List<Ticket>>(emptyList())
     var shouldFailSave: Boolean = false
+    var shouldFailGet: Boolean = false
     var saveFailureCause: String = "Simulated save error"
 
     override fun getTickets(): Flow<AppResult<List<Ticket>>> =
-        tickets.map { AppResult.Success(it) }
+        tickets.map {
+            if (shouldFailGet) {
+                AppResult.Error(AppError.Storage.ReadFailed("Simulated read error"))
+            } else {
+                AppResult.Success(it)
+            }
+        }
 
     override suspend fun getTicketByBookingCode(bookingCode: String): AppResult<Ticket?> {
+        if (shouldFailGet) {
+            return AppResult.Error(AppError.Storage.ReadFailed("Simulated read error"))
+        }
         val ticket = tickets.value.firstOrNull { it.bookingCode == bookingCode }
         return AppResult.Success(ticket)
     }

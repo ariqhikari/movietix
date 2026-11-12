@@ -1,54 +1,20 @@
 package org.ariqhikari.movietix.navigation
 
-import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.statusBarsPadding
-import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.Card
-import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.HorizontalDivider
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarHostState
-import androidx.compose.material3.Surface
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalUriHandler
-import androidx.compose.ui.semantics.Role
-import androidx.compose.ui.semantics.contentDescription
-import androidx.compose.ui.semantics.role
-import androidx.compose.ui.semantics.semantics
-import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.toRoute
+import org.ariqhikari.movietix.core.presentation.components.BottomNavTab
+import org.ariqhikari.movietix.core.presentation.components.MovieTixBottomBar
 import org.ariqhikari.movietix.domain.booking.model.BookingOrder
 import org.ariqhikari.movietix.presentation.booking.checkout.CheckoutEffect
 import org.ariqhikari.movietix.presentation.booking.checkout.CheckoutScreen
@@ -57,6 +23,7 @@ import org.ariqhikari.movietix.presentation.cinema.schedule.ScheduleEffect
 import org.ariqhikari.movietix.presentation.cinema.schedule.ScheduleScreen
 import org.ariqhikari.movietix.presentation.cinema.schedule.ScheduleViewModel
 import org.ariqhikari.movietix.presentation.cinema.seatmap.SeatMapEffect
+import org.ariqhikari.movietix.presentation.cinema.seatmap.SeatMapNavParams
 import org.ariqhikari.movietix.presentation.cinema.seatmap.SeatMapScreen
 import org.ariqhikari.movietix.presentation.cinema.seatmap.SeatMapViewModel
 import org.ariqhikari.movietix.presentation.movie.detail.DetailEffect
@@ -65,6 +32,12 @@ import org.ariqhikari.movietix.presentation.movie.detail.DetailViewModel
 import org.ariqhikari.movietix.presentation.movie.home.HomeEffect
 import org.ariqhikari.movietix.presentation.movie.home.HomeScreen
 import org.ariqhikari.movietix.presentation.movie.home.HomeViewModel
+import org.ariqhikari.movietix.presentation.ticket.detail.TicketDetailContract
+import org.ariqhikari.movietix.presentation.ticket.detail.TicketDetailScreen
+import org.ariqhikari.movietix.presentation.ticket.detail.TicketDetailViewModel
+import org.ariqhikari.movietix.presentation.ticket.history.TicketHistoryContract
+import org.ariqhikari.movietix.presentation.ticket.history.TicketHistoryScreen
+import org.ariqhikari.movietix.presentation.ticket.history.TicketHistoryViewModel
 import org.koin.compose.viewmodel.koinViewModel
 import org.koin.core.parameter.parametersOf
 
@@ -101,6 +74,54 @@ fun AppNavigation(
             }
 
             HomeScreen(
+                state = state,
+                onAction = viewModel::onAction,
+                bottomBar = {
+                    MovieTixBottomBar(
+                        currentTab = BottomNavTab.FILM,
+                        onTabSelected = { tab ->
+                            if (tab == BottomNavTab.TIKET_SAYA) {
+                                navController.navigate(ScreenDestination.TicketHistory) {
+                                    popUpTo(ScreenDestination.Home) {
+                                        saveState = true
+                                    }
+                                    launchSingleTop = true
+                                    restoreState = true
+                                }
+                            }
+                        }
+                    )
+                }
+            )
+        }
+
+        composable<ScreenDestination.TicketHistory> {
+            val viewModel: TicketHistoryViewModel = koinViewModel()
+            val state by viewModel.state.collectAsStateWithLifecycle()
+
+            LaunchedEffect(viewModel.effect) {
+                viewModel.effect.collect { effect ->
+                    when (effect) {
+                        is TicketHistoryContract.Effect.NavigateToDetail -> {
+                            navController.navigate(ScreenDestination.TicketDetail(effect.bookingCode)) {
+                                launchSingleTop = true
+                            }
+                        }
+                        is TicketHistoryContract.Effect.NavigateToHome -> {
+                            navController.navigate(ScreenDestination.Home) {
+                                popUpTo(ScreenDestination.Home) {
+                                    inclusive = false
+                                    saveState = true
+                                }
+                                launchSingleTop = true
+                                restoreState = true
+                            }
+                        }
+                    }
+                }
+            }
+
+            TicketHistoryScreen(
                 state = state,
                 onAction = viewModel::onAction
             )
@@ -203,7 +224,7 @@ fun AppNavigation(
 
         composable<ScreenDestination.SeatMap> { backStackEntry ->
             val destination = backStackEntry.toRoute<ScreenDestination.SeatMap>()
-            val navParams = org.ariqhikari.movietix.presentation.cinema.seatmap.SeatMapNavParams(
+            val navParams = SeatMapNavParams(
                 scheduleId = destination.scheduleId,
                 movieId = destination.movieId,
                 movieTitle = destination.movieTitle,
@@ -299,7 +320,12 @@ fun AppNavigation(
                             navController.popBackStack()
                         }
                         is CheckoutEffect.NavigateToTicketDetail -> {
-                            navController.popBackStack(ScreenDestination.Home, inclusive = false)
+                            navController.navigate(ScreenDestination.TicketHistory) {
+                                popUpTo(ScreenDestination.Home) { inclusive = false }
+                            }
+                            navController.navigate(ScreenDestination.TicketDetail(effect.bookingCode)) {
+                                launchSingleTop = true
+                            }
                         }
                         is CheckoutEffect.NavigateToHome -> {
                             navController.popBackStack(ScreenDestination.Home, inclusive = false)
@@ -315,6 +341,32 @@ fun AppNavigation(
                 state = state,
                 onAction = viewModel::onAction,
                 snackbarHostState = snackbarHostState
+            )
+        }
+
+        composable<ScreenDestination.TicketDetail> { backStackEntry ->
+            val destination = backStackEntry.toRoute<ScreenDestination.TicketDetail>()
+            val viewModel: TicketDetailViewModel = koinViewModel(
+                parameters = { parametersOf(destination.bookingCode) }
+            )
+            val state by viewModel.state.collectAsStateWithLifecycle()
+
+            LaunchedEffect(viewModel.effect) {
+                viewModel.effect.collect { effect ->
+                    when (effect) {
+                        is TicketDetailContract.Effect.NavigateBack -> {
+                            navController.popBackStack()
+                        }
+                        is TicketDetailContract.Effect.ShowSnackbar -> {
+                            // Handled inside TicketDetailScreen snackbar host
+                        }
+                    }
+                }
+            }
+
+            TicketDetailScreen(
+                state = state,
+                onAction = viewModel::onAction
             )
         }
     }

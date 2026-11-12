@@ -192,22 +192,14 @@ Menampilkan bukti tiket yang telah dibeli dengan desain fisik berperforasi (*pun
 - [x] **5.1 Integrasi Library QR Code Multiplatform**
   - [x] Integrasikan `io.github.alexzhirkevich:qrose` untuk rendering QR Code murni di Compose Canvas.
   - *Commit*: `feat(ticket): integrate qrose library for offline qr rendering`
-- [ ] **5.2 Presentation Layer E-Tiket & Riwayat Transaksi**
-  - [ ] Rancang kontrak `TicketDetailContract` dan `TicketHistoryContract` di `presentation/ticket/`.
-  - [ ] Buat custom shape Compose `PerforatedTicketCard`:
-    - [ ] Efek notch setengah lingkaran pada kedua sisi kartu.
-    - [ ] Garis perforasi putus-putus (`- - -`).
-    - [ ] Area QR Code kontras tinggi (hitam di atas putih `#FFFFFF`).
-  - [ ] Buat layar `TicketDetailScreen` (dengan status tiket aktif dan catatan bahwa fitur share/kalender adalah future work).
-  - [ ] Buat layar `TicketHistoryScreen` (daftar kartu tiket lampau dan empty state).
-  - *Commit*: `feat(ticket): build perforated ticket detail and history screens`
-  - [ ] Rancang kontrak `TicketDetailContract` dan `TicketHistoryContract` di `presentation/ticket/`.
-  - [ ] Buat custom shape Compose `PerforatedTicketCard`:
-    - [ ] Efek notch setengah lingkaran pada kedua sisi kartu.
-    - [ ] Garis perforasi putus-putus (`- - -`).
-    - [ ] Area QR Code kontras tinggi (hitam di atas putih `#FFFFFF`).
-  - [ ] Buat layar `TicketDetailScreen` (dengan status tiket aktif dan catatan bahwa fitur share/kalender adalah future work).
-  - [ ] Buat layar `TicketHistoryScreen` (daftar kartu tiket lampau dan empty state).
+- [x] **5.2 Presentation Layer E-Tiket & Riwayat Transaksi**
+  - [x] Rancang kontrak `TicketDetailContract` dan `TicketHistoryContract` di `presentation/ticket/`.
+  - [x] Buat custom shape Compose `PerforatedTicketCard`:
+    - [x] Efek notch setengah lingkaran pada kedua sisi kartu.
+    - [x] Garis perforasi putus-putus (`- - -`).
+    - [x] Area QR Code kontras tinggi (hitam di atas putih `#FFFFFF`).
+  - [x] Buat layar `TicketDetailScreen` (dengan status tiket aktif dan catatan bahwa fitur share/kalender adalah future work).
+  - [x] Buat layar `TicketHistoryScreen` (daftar kartu tiket lampau dan empty state).
   - *Commit*: `feat(ticket): build perforated ticket detail and history screens`
 
 > **Definition of Done (DoD) Fase 5:**  

@@ -44,7 +44,8 @@ import org.ariqhikari.movietix.presentation.movie.home.components.MovieCardSkele
 fun HomeScreen(
     state: HomeState,
     onAction: (HomeAction) -> Unit,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    bottomBar: @Composable () -> Unit = {}
 ) {
     val gridState = rememberLazyGridState()
     val snackbarHostState = remember { SnackbarHostState() }
@@ -80,6 +81,7 @@ fun HomeScreen(
                 )
             )
         },
+        bottomBar = bottomBar,
         snackbarHost = { SnackbarHost(snackbarHostState) }
     ) { innerPadding ->
         LazyVerticalGrid(
