@@ -22,10 +22,10 @@ Menyiapkan *version catalog* lengkap, mengonfigurasi Koin DI, Ktor Client HTTPS 
   - [x] Perbarui `shared/module.yaml`, `androidApp/module.yaml`, dan `iosApp/module.yaml` agar mengenali dependensi baru.
   - [x] Konfigurasi `local.properties.template` dan mekanisme token `tmdbAccessToken()` expect/actual.
   - *Commit*: `build(deps): add koin ktor datastore and coil to version catalog`
-- [ ] **0.2 Desain Sistem & Resource Asset**
-  - [ ] Unduh font `Outfit` dan `Plus Jakarta Sans` ke `shared/composeResources/font/`.
-  - [ ] Implementasikan palet warna `MovieTixColors` (`light-primary` `#825000`, `state-error` `#FF6B6B`) dan `MovieTixTypography` di `core/presentation/theme/`.
-  - [ ] Buat kerangka `MovieTixTheme` yang mendukung status bar edge-to-edge.
+- [x] **0.2 Desain Sistem & Resource Asset**
+  - [x] Unduh font `Outfit` dan `Plus Jakarta Sans` ke `shared/composeResources/font/`.
+  - [x] Implementasikan palet warna `MovieTixColors` (`light-primary` `#825000`, `state-error` `#FF6B6B`) dan `MovieTixTypography` di `core/presentation/theme/`.
+  - [x] Buat kerangka `MovieTixTheme` yang mendukung status bar edge-to-edge.
   - *Commit*: `style(design-system): implement color tokens typography and theme`
 - [ ] **0.3 Ktor Networking & Error Handling Core**
   - [ ] Deklarasikan `expect fun getHttpEngine(): HttpClientEngine` di `core/data/network/`.
