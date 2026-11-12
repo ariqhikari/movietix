@@ -24,6 +24,7 @@ MovieTix memanfaatkan TMDB API v3 sebagai sumber data katalog film.
 | **Now Playing Movies** | `GET /movie/now_playing` | `page`, `language=id-ID` (fallback `en-US`), `region=ID` | `MovieResponseDto` |
 | **Popular Movies** | `GET /movie/popular` | `page`, `language=id-ID`, `region=ID` | `MovieResponseDto` |
 | **Upcoming Movies** | `GET /movie/upcoming` | `page`, `language=id-ID`, `region=ID` | `MovieResponseDto` |
+| **Genre List** | `GET /genre/movie/list` | `language=id-ID` | `GenreListResponseDto` |
 | **Detail Film Lengkap** | `GET /movie/{movie_id}` | `language=id-ID` | `MovieDetailDto` |
 | **Daftar Pemeran & Kru** | `GET /movie/{movie_id}/credits` | `language=en-US` | `CreditsDto` |
 | **Video & Trailer Film** | `GET /movie/{movie_id}/videos` | `language=en-US` | `VideosDto` |

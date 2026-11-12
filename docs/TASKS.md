@@ -59,11 +59,12 @@ Menyiapkan *version catalog* lengkap, mengonfigurasi Koin DI, Ktor Client HTTPS 
 Mengimplementasikan integrasi TMDB API untuk memuat film *Now Playing*, *Popular*, dan *Upcoming* dengan *infinite scroll pagination*, carousel hero, serta penanganan state (loading shimmer, error retry, dan empty).
 
 ### Checklist Tugas:
-- [ ] **1.1 Data Layer Fitur Film**
-  - [ ] Definisikan DTO `MovieResponseDto`, `MovieDto`, `GenreDto` di `data/movie/remote/dto/`.
-  - [ ] Buat `TmdbApiService` untuk endpoint `/movie/now_playing`, `/movie/popular`, `/movie/upcoming`.
-  - [ ] Implementasikan `MovieMapper` (`MovieDto.toDomain(): Movie`) di `data/movie/mapper/`.
-  - [ ] Buat `MovieRepositoryImpl` di `data/movie/repository/`.
+- [x] **1.1 Data Layer Fitur Film**
+  - [x] Tambahkan helper `safeApiCall` di `core/data/network/` untuk memetakan exception Ktor ke `AppError` dengan rethrow `CancellationException`.
+  - [x] Definisikan DTO `MovieResponseDto`, `MovieDto`, `GenreDto`, `GenreListResponseDto` di `data/movie/remote/dto/`.
+  - [x] Buat `TmdbApiService` untuk endpoint `/movie/now_playing`, `/movie/popular`, `/movie/upcoming`, dan `/genre/movie/list`.
+  - [x] Implementasikan `MovieMapper` (`MovieDto.toDomain(): Movie`) di `data/movie/mapper/` dengan format poster/backdrop URL dan fallback null/blank.
+  - [x] Buat `MovieRepositoryImpl` di `data/movie/repository/` dengan in-memory caching untuk genre TMDB.
   - *Commit*: `feat(movie): implement tmdb remote datasource and repository`
 - [ ] **1.2 Domain Layer Fitur Film**
   - [ ] Definisikan domain model `Movie`, `MovieCategory`, `Genre` di `domain/movie/model/`.
