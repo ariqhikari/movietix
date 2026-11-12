@@ -19,7 +19,10 @@ fun startMovieTixKoin(
         startKoin {
             appDeclaration()
             modules(
-                listOf(createCoreModule(isDebug = isDebug)) + additionalModules
+                listOf(
+                    createCoreModule(isDebug = isDebug),
+                    movieModule
+                ) + additionalModules
             )
         }
     }

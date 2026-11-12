@@ -79,9 +79,9 @@ Mengimplementasikan integrasi TMDB API untuk memuat film *Now Playing*, *Popular
   - [x] Buat komponen UI `CategoryFilterChips` (Now Playing, Popular, Upcoming).
   - [x] Buat komponen UI `ShimmerSkeletonList` dan `ErrorStateView`.
   - *Commit*: `feat(movie): build home screen with hero banner and catalog grid`
-- [ ] **1.4 Registrasi Koin & Navigasi Home**
-  - [ ] Daftarkan `MovieModule.kt` ke Koin.
-  - [ ] Setup NavHost dasar untuk rute `ScreenDestination.Home`.
+- [x] **1.4 Registrasi Koin & Navigasi Home**
+  - [x] Daftarkan `MovieModule.kt` ke Koin.
+  - [x] Setup NavHost dasar untuk rute `ScreenDestination.Home`.
   - *Commit*: `feat(di): register movie module and navigation destination`
 
 > **Definition of Done (DoD) Fase 1:**  
