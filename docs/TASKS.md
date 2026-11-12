@@ -189,8 +189,8 @@ Mengimplementasikan alur konfirmasi pesanan dan simulasi transaksi pembayaran ta
 Menampilkan bukti tiket yang telah dibeli dengan desain fisik berperforasi (*punched notch*), me-render QR Code offline dengan `qrose`, serta menyediakan layar riwayat tiket.
 
 ### Checklist Tugas:
-- [ ] **5.1 Integrasi Library QR Code Multiplatform**
-  - [ ] Integrasikan `io.github.alexzhirkevich:qrose` untuk rendering QR Code murni di Compose Canvas.
+- [x] **5.1 Integrasi Library QR Code Multiplatform**
+  - [x] Integrasikan `io.github.alexzhirkevich:qrose` untuk rendering QR Code murni di Compose Canvas.
   - *Commit*: `feat(ticket): integrate qrose library for offline qr rendering`
 - [ ] **5.2 Presentation Layer E-Tiket & Riwayat Transaksi**
   - [ ] Rancang kontrak `TicketDetailContract` dan `TicketHistoryContract` di `presentation/ticket/`.

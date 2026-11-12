@@ -42,6 +42,9 @@ dependencies:
   # --- Navigation ---
   - $libs.navigation.compose
 
+  # --- QR Code Rendering (Fase 5) ---
+  - $libs.qrose
+
 dependencies@android:
   - $compose.uiTooling
   - $libs.ktor.client.okhttp
