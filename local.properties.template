@@ -1,0 +1,19 @@
+# ============================================================
+# MovieTix — Template Konfigurasi Rahasia Lokal
+# ============================================================
+# Salin file ini menjadi local.properties di root project,
+# kemudian isi dengan token API TMDB kamu sendiri.
+#
+# File local.properties sudah masuk .gitignore dan TIDAK akan
+# pernah ter-commit ke repository.
+#
+# Cara mendapatkan token TMDB:
+#   1. Daftar di https://www.themoviedb.org/
+#   2. Buka Settings > API > Create API Key (Developer)
+#   3. Salin "API Read Access Token" (bukan API Key v3)
+#      dan tempel di bawah.
+# ============================================================
+
+# TMDB API Read Access Token (Bearer Token)
+# Format: eyJhbGc... (token panjang, bukan API key pendek)
+tmdb.access.token=YOUR_TMDB_READ_ACCESS_TOKEN_HERE

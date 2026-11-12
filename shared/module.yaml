@@ -3,6 +3,7 @@ product:
   platforms: [ android, iosArm64, iosSimulatorArm64 ]
 
 dependencies:
+  # --- Compose Multiplatform (UI) ---
   - $compose.runtime
   - $compose.foundation
   - $compose.material3
@@ -10,16 +11,54 @@ dependencies:
   - $compose.components.resources
   - $compose.preview
   - $compose.hotReload.runtimeApi
+
+  # --- Lifecycle & ViewModel ---
   - $libs.androidx.lifecycle.viewmodel.compose
   - $libs.androidx.lifecycle.runtime.compose
 
+  # --- Coroutines & Serialization ---
+  - $libs.kotlinx.coroutines.core
+  - $libs.kotlinx.serialization.json
+  - $libs.kotlinx.datetime
+
+  # --- Koin DI ---
+  - $libs.koin.core
+  - $libs.koin.compose
+  - $libs.koin.compose.viewmodel
+
+  # --- Ktor Networking ---
+  - $libs.ktor.client.core
+  - $libs.ktor.client.content.negotiation
+  - $libs.ktor.serialization.kotlinx.json
+  - $libs.ktor.client.logging
+
+  # --- DataStore ---
+  - $libs.datastore.preferences.core
+
+  # --- Image Loading ---
+  - $libs.coil.compose
+  - $libs.coil.network.ktor3
+
+  # --- Navigation ---
+  - $libs.navigation.compose
+
 dependencies@android:
   - $compose.uiTooling
+  - $libs.ktor.client.okhttp
+
+dependencies@ios:
+  - $libs.ktor.client.darwin
+
+test-dependencies:
+  - $libs.kotlinx.coroutines.test
+  - $libs.turbine
 
 settings:
   compose:
     enabled: true
     resources:
       packageName: org.ariqhikari.movietix.resources
-      # Generate public accessors so other modules (and previews) can use Res.*
       exposedAccessors: true
+  kotlin:
+    serialization:
+      enabled: true

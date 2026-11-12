@@ -9,3 +9,11 @@ captures
 !**/module.xcodeproj/project.xcworkspace/
 **/xcshareddata/WorkspaceSettings.xcsettings
 xcuserdata
+
+# IDE
+.idea/
+
+# Secrets — JANGAN pernah commit file ini
+local.properties
+iosApp/src/Secrets.xcconfig
+

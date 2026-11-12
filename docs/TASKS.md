@@ -17,10 +17,10 @@ Dokumen ini berisi daftar tugas (*actionable tasks*) bertahap dari Fase 0 hingga
 Menyiapkan *version catalog* lengkap, mengonfigurasi Koin DI, Ktor Client HTTPS dengan header Bearer token, DataStore factory, bundel font, dan kerangka desain tema di `commonMain`.
 
 ### Checklist Tugas:
-- [ ] **0.1 Setup Version Catalog & Modul Build**
-  - [ ] Tambahkan dependensi Koin, Ktor, DataStore, Coil 3, DateTime, Serialization, dan QR Code ke `libs.versions.toml`.
-  - [ ] Perbarui `shared/module.yaml`, `androidApp/module.yaml`, dan `iosApp/module.yaml` agar mengenali dependensi baru.
-  - [ ] Konfigurasi `local.properties.template` dan plugin `BuildKonfig` untuk `BuildKonfig.TMDB_ACCESS_TOKEN`.
+- [x] **0.1 Setup Version Catalog & Modul Build**
+  - [x] Tambahkan dependensi Koin, Ktor, DataStore, Coil 3, DateTime, Serialization, dan QR Code ke `libs.versions.toml`.
+  - [x] Perbarui `shared/module.yaml`, `androidApp/module.yaml`, dan `iosApp/module.yaml` agar mengenali dependensi baru.
+  - [x] Konfigurasi `local.properties.template` dan mekanisme token `tmdbAccessToken()` expect/actual.
   - *Commit*: `build(deps): add koin ktor datastore and coil to version catalog`
 - [ ] **0.2 Desain Sistem & Resource Asset**
   - [ ] Unduh font `Outfit` dan `Plus Jakarta Sans` ke `shared/composeResources/font/`.
