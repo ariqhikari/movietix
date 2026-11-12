@@ -167,14 +167,14 @@ class DetailViewModelTest {
     }
 
     @Test
-    fun selectScheduleClicked_emitsShowSnackbarEffect() = runTest(testDispatcher) {
+    fun selectScheduleClicked_emitsNavigateToScheduleEffect() = runTest(testDispatcher) {
         val viewModel = createViewModel(42)
 
         viewModel.effect.test {
             viewModel.onAction(DetailAction.SelectScheduleClicked)
             val effect = awaitItem()
-            assertTrue(effect is DetailEffect.ShowSnackbar)
-            assertTrue(effect.message.contains("Fase 3"))
+            assertTrue(effect is DetailEffect.NavigateToSchedule)
+            assertEquals(42, effect.movieId)
         }
     }
 
