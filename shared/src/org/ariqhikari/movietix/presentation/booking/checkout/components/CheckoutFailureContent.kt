@@ -57,7 +57,7 @@ fun CheckoutFailureContent(
             modifier = Modifier
                 .size(72.dp)
                 .clip(CircleShape)
-                .background(Color(0xFF381E1E))
+                .background(MovieTixColors.StateErrorContainerDark)
                 .border(2.dp, MovieTixColors.StateErrorDark, CircleShape),
             contentAlignment = Alignment.Center
         ) {

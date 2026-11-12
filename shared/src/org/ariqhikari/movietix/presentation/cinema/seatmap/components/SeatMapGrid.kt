@@ -36,6 +36,7 @@ import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import org.ariqhikari.movietix.core.presentation.theme.MovieTixColors
 import org.ariqhikari.movietix.domain.cinema.model.SeatLayout
 import org.ariqhikari.movietix.domain.cinema.model.SeatStatus
 
@@ -142,7 +143,7 @@ private fun RowHeader(
             text = letter,
             style = MaterialTheme.typography.labelSmall,
             fontWeight = FontWeight.Bold,
-            color = Color(0xFF8E93A2),
+            color = MovieTixColors.CinemaTextSecondary,
             fontSize = 12.sp
         )
     }
@@ -163,9 +164,9 @@ private fun SeatCell(
     )
 
     val (backgroundColor, borderColor, textColor, symbol) = when {
-        isOccupied -> Quadruple(Color(0xFF141519), Color(0xFF282A30), Color(0xFF555861), "✕")
-        isSelected -> Quadruple(MaterialTheme.colorScheme.primary, null, Color(0xFF0D0D11), "✓")
-        else -> Quadruple(Color(0xFF1E2026), Color(0xFF4A4D54), Color(0xFF8E93A2), "$colNumber")
+        isOccupied -> Quadruple(MovieTixColors.CinemaSeatOccupied, MovieTixColors.CinemaSurfaceBorder, MovieTixColors.CinemaTextTertiary, "✕")
+        isSelected -> Quadruple(MovieTixColors.CinemaSeatSelected, null, MovieTixColors.CinemaOnPrimary, "✓")
+        else -> Quadruple(MovieTixColors.CinemaSeatAvailable, MovieTixColors.CinemaSeatBorder, MovieTixColors.CinemaTextSecondary, "$colNumber")
     }
 
     val statusDesc = when {

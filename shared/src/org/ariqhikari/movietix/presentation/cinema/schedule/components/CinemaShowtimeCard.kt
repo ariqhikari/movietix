@@ -33,6 +33,9 @@ import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import org.ariqhikari.movietix.core.presentation.theme.MovieTixColors
+import org.ariqhikari.movietix.core.presentation.theme.Radius
+import org.ariqhikari.movietix.core.presentation.theme.Spacing
 import org.ariqhikari.movietix.domain.cinema.model.Cinema
 import org.ariqhikari.movietix.domain.cinema.model.Showtime
 import org.ariqhikari.movietix.domain.cinema.model.Studio
@@ -48,9 +51,9 @@ fun CinemaShowtimeCard(
     Card(
         shape = RoundedCornerShape(16.dp),
         colors = CardDefaults.cardColors(
-            containerColor = Color(0xFF1A1C24)
+            containerColor = MovieTixColors.CinemaSurfaceCard
         ),
-        border = BorderStroke(1.dp, Color(0xFF282B36)),
+        border = BorderStroke(1.dp, MovieTixColors.CinemaSurfaceBorder),
         modifier = modifier.fillMaxWidth()
     ) {
         Column(
@@ -67,12 +70,12 @@ fun CinemaShowtimeCard(
             Text(
                 text = cinema.address,
                 style = MaterialTheme.typography.bodySmall,
-                color = Color(0xFF9EA3B0),
+                color = MovieTixColors.CinemaTextSecondary,
                 lineHeight = 16.sp
             )
 
             Spacer(modifier = Modifier.height(14.dp))
-            HorizontalDivider(color = Color(0xFF282B36), thickness = 1.dp)
+            HorizontalDivider(color = MovieTixColors.CinemaSurfaceBorder, thickness = 1.dp)
             Spacer(modifier = Modifier.height(14.dp))
 
             // Studios
@@ -89,7 +92,7 @@ fun CinemaShowtimeCard(
                         text = studio.name,
                         style = MaterialTheme.typography.labelLarge,
                         fontWeight = FontWeight.SemiBold,
-                        color = Color(0xFFE2E4EC)
+                        color = Color.White
                     )
                     Spacer(modifier = Modifier.width(8.dp))
                     StudioBadge(type = studio.type)
@@ -121,10 +124,10 @@ private fun StudioBadge(
     modifier: Modifier = Modifier
 ) {
     val (containerColor, contentColor, label) = when (type) {
-        StudioType.REGULAR -> Triple(Color(0xFF1E293B), Color(0xFF94A3B8), "2D")
-        StudioType.FOUR_DX -> Triple(Color(0xFF3F1B1B), Color(0xFFF87171), "4DX")
-        StudioType.STARIUM -> Triple(Color(0xFF0F303E), Color(0xFF38BDF8), "STARIUM")
-        StudioType.VELVET -> Triple(Color(0xFF3D152C), Color(0xFFF472B6), "VELVET")
+        StudioType.REGULAR -> Triple(MovieTixColors.CinemaSurfaceSubtle, MovieTixColors.CinemaTextSecondary, "2D")
+        StudioType.FOUR_DX -> Triple(MovieTixColors.CinemaPrimaryContainer, MovieTixColors.CinemaPrimary, "4DX")
+        StudioType.STARIUM -> Triple(MovieTixColors.CinemaSurfaceSubtle, MovieTixColors.CinemaSecondary, "STARIUM")
+        StudioType.VELVET -> Triple(MovieTixColors.CinemaPrimaryContainer, MovieTixColors.CinemaSecondary, "VELVET")
     }
 
     Box(
@@ -155,8 +158,8 @@ private fun ShowtimeChip(
     Box(
         modifier = modifier
             .clip(RoundedCornerShape(10.dp))
-            .background(Color(0xFF222530))
-            .border(1.dp, Color(0xFF323645), RoundedCornerShape(10.dp))
+            .background(MovieTixColors.CinemaSurfaceSubtle)
+            .border(1.dp, MovieTixColors.CinemaSurfaceBorder, RoundedCornerShape(10.dp))
             .semantics {
                 role = Role.Button
                 contentDescription = "Jam tayang ${showtime.time}, harga $formattedPrice, $availableSeats kursi tersedia"
@@ -184,7 +187,7 @@ private fun ShowtimeChip(
             Text(
                 text = "$availableSeats sisa",
                 style = MaterialTheme.typography.labelSmall,
-                color = Color(0xFF8E93A2),
+                color = MovieTixColors.CinemaTextTertiary,
                 fontSize = 10.sp
             )
         }

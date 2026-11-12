@@ -18,7 +18,6 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.role
@@ -29,6 +28,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import kotlinx.datetime.DayOfWeek
 import kotlinx.datetime.LocalDate
+import org.ariqhikari.movietix.core.presentation.theme.MovieTixColors
 
 @Composable
 fun HorizontalDatePicker(
@@ -51,17 +51,17 @@ fun HorizontalDatePicker(
             val containerColor = if (isSelected) {
                 MaterialTheme.colorScheme.primary
             } else {
-                Color(0xFF1E2028)
+                MovieTixColors.CinemaSurfaceCard
             }
             val contentColor = if (isSelected) {
                 MaterialTheme.colorScheme.onPrimary
             } else {
-                Color(0xFFE4E5EB)
+                MovieTixColors.CinemaTextPrimary
             }
             val border = if (isSelected) {
                 null
             } else {
-                BorderStroke(1.dp, Color(0xFF2E313D))
+                BorderStroke(1.dp, MovieTixColors.CinemaSurfaceBorder)
             }
 
             Card(
@@ -93,7 +93,7 @@ fun HorizontalDatePicker(
                     Text(
                         text = dayName,
                         style = MaterialTheme.typography.labelSmall,
-                        color = if (isSelected) contentColor.copy(alpha = 0.85f) else Color(0xFF9EA3B0),
+                        color = if (isSelected) contentColor.copy(alpha = 0.85f) else MovieTixColors.CinemaTextSecondary,
                         fontWeight = FontWeight.Medium
                     )
                     Text(
@@ -106,7 +106,7 @@ fun HorizontalDatePicker(
                     Text(
                         text = monthName,
                         style = MaterialTheme.typography.labelSmall,
-                        color = if (isSelected) contentColor.copy(alpha = 0.85f) else Color(0xFF9EA3B0),
+                        color = if (isSelected) contentColor.copy(alpha = 0.85f) else MovieTixColors.CinemaTextSecondary,
                         fontWeight = FontWeight.Normal
                     )
                 }

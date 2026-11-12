@@ -64,7 +64,7 @@ fun CheckoutSuccessContent(
             modifier = Modifier
                 .size(72.dp)
                 .clip(CircleShape)
-                .background(Color(0xFF1E3A2B))
+                .background(MovieTixColors.StateSuccessContainer)
                 .border(2.dp, MovieTixColors.StateSuccess, CircleShape),
             contentAlignment = Alignment.Center
         ) {

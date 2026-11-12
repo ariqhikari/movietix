@@ -13,13 +13,13 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Path
 import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import org.ariqhikari.movietix.core.presentation.theme.MovieTixColors
 
 @Composable
 fun CinemaScreenCurved(
@@ -76,7 +76,7 @@ fun CinemaScreenCurved(
         Text(
             text = "LAYAR BIOSKOP",
             style = MaterialTheme.typography.labelSmall,
-            color = Color(0xFF8E93A2),
+            color = MovieTixColors.CinemaTextSecondary,
             fontWeight = FontWeight.SemiBold,
             letterSpacing = 2.sp,
             fontSize = 11.sp

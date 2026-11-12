@@ -413,10 +413,10 @@ private fun CheckoutMainContent(
 
                 Card(
                     shape = RoundedCornerShape(16.dp),
-                    colors = CardDefaults.cardColors(containerColor = Color(0xFF251F1F)),
+                    colors = CardDefaults.cardColors(containerColor = MovieTixColors.CinemaSurfaceCard),
                     modifier = Modifier
                         .fillMaxWidth()
-                        .border(1.dp, Color(0xFF552222), RoundedCornerShape(16.dp))
+                        .border(1.dp, MovieTixColors.CinemaSurfaceBorder, RoundedCornerShape(16.dp))
                 ) {
                     Row(
                         modifier = Modifier
@@ -430,7 +430,7 @@ private fun CheckoutMainContent(
                                 text = "Simulasi Pembayaran Gagal (Debug)",
                                 style = MaterialTheme.typography.bodySmall,
                                 fontWeight = FontWeight.Bold,
-                                color = Color(0xFFFF8A80)
+                                color = MovieTixColors.StateErrorDark
                             )
                             Spacer(modifier = Modifier.height(4.dp))
                             Text(
@@ -445,10 +445,10 @@ private fun CheckoutMainContent(
                             checked = state.isDebugSimulateFailure,
                             onCheckedChange = { onAction(CheckoutAction.DebugSimulateFailureToggled(it)) },
                             colors = SwitchDefaults.colors(
-                                checkedThumbColor = Color(0xFFFF5252),
-                                checkedTrackColor = Color(0xFF552222),
-                                uncheckedThumbColor = Color.Gray,
-                                uncheckedTrackColor = Color(0xFF333333)
+                                checkedThumbColor = MovieTixColors.StateErrorDark,
+                                checkedTrackColor = MovieTixColors.StateErrorContainerDark,
+                                uncheckedThumbColor = MovieTixColors.CinemaTextTertiary,
+                                uncheckedTrackColor = MovieTixColors.CinemaSurfaceBorder
                             )
                         )
                     }

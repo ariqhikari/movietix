@@ -37,6 +37,7 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import org.ariqhikari.movietix.core.presentation.components.ErrorStateView
+import org.ariqhikari.movietix.core.presentation.theme.MovieTixColors
 import org.ariqhikari.movietix.presentation.cinema.seatmap.components.CinemaScreenCurved
 import org.ariqhikari.movietix.presentation.cinema.seatmap.components.SeatMapGrid
 import org.ariqhikari.movietix.presentation.cinema.seatmap.components.SeatMapLegend
@@ -144,7 +145,7 @@ private fun SeatMapTopBar(
                 modifier = Modifier
                     .size(40.dp)
                     .clip(CircleShape)
-                    .background(Color(0xFF222530))
+                    .background(MovieTixColors.CinemaSurfaceCard)
                     .clickable(role = Role.Button, onClick = onBackClick)
                     .semantics {
                         contentDescription = "Kembali ke jadwal tayang"
@@ -172,7 +173,7 @@ private fun SeatMapTopBar(
                 Text(
                     text = "$cinemaName • $studioName",
                     style = MaterialTheme.typography.bodySmall,
-                    color = Color(0xFF9EA3B0),
+                    color = MovieTixColors.CinemaTextSecondary,
                     maxLines = 1,
                     overflow = TextOverflow.Ellipsis
                 )
@@ -191,14 +192,14 @@ private fun ShowtimeInfoBanner(
     Box(
         modifier = modifier
             .padding(horizontal = 16.dp, vertical = 8.dp)
-            .clip(RoundedCornerShape(8.dp))
-            .background(Color(0xFF1E2028))
+            .clip(RoundedCornerShape(8.dp) )
+            .background(MovieTixColors.CinemaSurfaceCard)
             .padding(horizontal = 12.dp, vertical = 6.dp)
     ) {
         Text(
             text = "$movieTitle • $dateStr, $timeStr WIB",
             style = MaterialTheme.typography.labelSmall,
-            color = Color(0xFFC4C7D0),
+            color = MovieTixColors.CinemaTextSecondary,
             fontWeight = FontWeight.Medium,
             maxLines = 1,
             overflow = TextOverflow.Ellipsis

@@ -41,6 +41,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import org.ariqhikari.movietix.core.presentation.components.EmptyStateView
 import org.ariqhikari.movietix.core.presentation.components.ErrorStateView
+import org.ariqhikari.movietix.core.presentation.theme.MovieTixColors
 import org.ariqhikari.movietix.presentation.cinema.schedule.components.CinemaShowtimeCard
 import org.ariqhikari.movietix.presentation.cinema.schedule.components.HorizontalDatePicker
 
@@ -144,7 +145,7 @@ private fun ScheduleTopBar(
                 modifier = Modifier
                     .size(40.dp)
                     .clip(CircleShape)
-                    .background(Color(0xFF222530))
+                    .background(MovieTixColors.CinemaSurfaceCard)
                     .clickable(role = Role.Button, onClick = onBackClick)
                     .semantics {
                         contentDescription = "Kembali ke detail film"
@@ -173,7 +174,7 @@ private fun ScheduleTopBar(
                     Text(
                         text = movieTitle,
                         style = MaterialTheme.typography.bodySmall,
-                        color = Color(0xFF9EA3B0),
+                        color = MovieTixColors.CinemaTextSecondary,
                         maxLines = 1,
                         overflow = TextOverflow.Ellipsis
                     )

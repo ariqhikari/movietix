@@ -27,6 +27,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import org.ariqhikari.movietix.core.presentation.theme.MovieTixColors
 import org.ariqhikari.movietix.domain.cinema.usecase.BookingPriceBreakdown
 
 @OptIn(ExperimentalLayoutApi::class)
@@ -41,7 +42,7 @@ fun SeatSummaryBottomBar(
         modifier = modifier
             .fillMaxWidth()
             .navigationBarsPadding(),
-        color = Color(0xFF161820),
+        color = MovieTixColors.CinemaSurfaceCard,
         tonalElevation = 8.dp,
         shadowElevation = 8.dp
     ) {
@@ -58,7 +59,7 @@ fun SeatSummaryBottomBar(
                 Text(
                     text = "Kursi Terpilih:",
                     style = MaterialTheme.typography.labelMedium,
-                    color = Color(0xFF8E93A2)
+                    color = MovieTixColors.CinemaTextSecondary
                 )
 
                 Spacer(modifier = Modifier.weight(1f))
@@ -67,7 +68,7 @@ fun SeatSummaryBottomBar(
                     Text(
                         text = "Maksimal 6 kursi",
                         style = MaterialTheme.typography.labelSmall,
-                        color = Color(0xFF6B7280)
+                        color = MovieTixColors.CinemaTextTertiary
                     )
                 }
             }
@@ -91,7 +92,7 @@ fun SeatSummaryBottomBar(
                                 text = seatId,
                                 style = MaterialTheme.typography.labelSmall,
                                 fontWeight = FontWeight.Bold,
-                                color = Color(0xFF0D0D11)
+                                color = MovieTixColors.CinemaOnPrimary
                             )
                         }
                     }
@@ -100,12 +101,12 @@ fun SeatSummaryBottomBar(
                 Text(
                     text = "Silakan ketuk kursi yang tersedia di peta.",
                     style = MaterialTheme.typography.bodySmall,
-                    color = Color(0xFF555861)
+                    color = MovieTixColors.CinemaTextTertiary
                 )
             }
 
             Spacer(modifier = Modifier.height(10.dp))
-            HorizontalDivider(color = Color(0xFF282B36), thickness = 1.dp)
+            HorizontalDivider(color = MovieTixColors.CinemaSurfaceBorder, thickness = 1.dp)
             Spacer(modifier = Modifier.height(10.dp))
 
             // Price and CTA Row
@@ -118,7 +119,7 @@ fun SeatSummaryBottomBar(
                     Text(
                         text = "Total Harga",
                         style = MaterialTheme.typography.labelSmall,
-                        color = Color(0xFF8E93A2)
+                        color = MovieTixColors.CinemaTextSecondary
                     )
                     Text(
                         text = formatRupiah(priceBreakdown.total),
@@ -130,7 +131,7 @@ fun SeatSummaryBottomBar(
                         Text(
                             text = "Termasuk biaya layanan ${formatRupiah(priceBreakdown.serviceFee)}",
                             style = MaterialTheme.typography.labelSmall,
-                            color = Color(0xFF6B7280),
+                            color = MovieTixColors.CinemaTextTertiary,
                             fontSize = 10.sp
                         )
                     }
@@ -143,8 +144,8 @@ fun SeatSummaryBottomBar(
                     colors = ButtonDefaults.buttonColors(
                         containerColor = MaterialTheme.colorScheme.primary,
                         contentColor = MaterialTheme.colorScheme.onPrimary,
-                        disabledContainerColor = Color(0xFF2A2D38),
-                        disabledContentColor = Color(0xFF555861)
+                        disabledContainerColor = MovieTixColors.CinemaSurfaceSubtle,
+                        disabledContentColor = MovieTixColors.CinemaTextTertiary
                     ),
                     modifier = Modifier.height(48.dp)
                 ) {

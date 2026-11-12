@@ -27,7 +27,9 @@ object MovieTixColors {
     val CinemaSeatSelected = Color(0xFFE5A93C)     // Selected seat solid gold
     val CinemaSeatOccupied = Color(0xFF161B26)     // Occupied seat muted
     val StateSuccess = Color(0xFF2EC492)           // Success confirmation
+    val StateSuccessContainer = Color(0xFF1E3A2B)  // Success container circle
     val StateErrorDark = Color(0xFFFF6B6B)         // Error dark theme (5.87:1 on card - pass AA)
+    val StateErrorContainerDark = Color(0xFF381E1E) // Error container circle
 
     // --- Light Theme (Matinee Mode — "Silver Screen Morning") ---
     val LightBackground = Color(0xFFF8F9FC)        // Clean light canvas

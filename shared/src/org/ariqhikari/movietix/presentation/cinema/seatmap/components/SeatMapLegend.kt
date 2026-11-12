@@ -21,6 +21,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import org.ariqhikari.movietix.core.presentation.theme.MovieTixColors
 
 @Composable
 fun SeatMapLegend(
@@ -37,9 +38,9 @@ fun SeatMapLegend(
         LegendItem(
             label = "Tersedia",
             symbol = null,
-            backgroundColor = Color(0xFF1E2026),
-            borderColor = Color(0xFF4A4D54),
-            textColor = Color(0xFFD1D5DB)
+            backgroundColor = MovieTixColors.CinemaSeatAvailable,
+            borderColor = MovieTixColors.CinemaSeatBorder,
+            textColor = MovieTixColors.CinemaTextSecondary
         )
 
         Spacer(modifier = Modifier.width(20.dp))
@@ -48,9 +49,9 @@ fun SeatMapLegend(
         LegendItem(
             label = "Dipilih",
             symbol = "✓",
-            backgroundColor = MaterialTheme.colorScheme.primary,
+            backgroundColor = MovieTixColors.CinemaSeatSelected,
             borderColor = null,
-            textColor = Color(0xFF0D0D11)
+            textColor = MovieTixColors.CinemaOnPrimary
         )
 
         Spacer(modifier = Modifier.width(20.dp))
@@ -59,9 +60,9 @@ fun SeatMapLegend(
         LegendItem(
             label = "Terisi",
             symbol = "✕",
-            backgroundColor = Color(0xFF141519),
-            borderColor = Color(0xFF282A30),
-            textColor = Color(0xFF6B7280)
+            backgroundColor = MovieTixColors.CinemaSeatOccupied,
+            borderColor = MovieTixColors.CinemaSurfaceBorder,
+            textColor = MovieTixColors.CinemaTextTertiary
         )
     }
 }
@@ -108,7 +109,7 @@ private fun LegendItem(
         Text(
             text = label,
             style = MaterialTheme.typography.labelSmall,
-            color = Color(0xFFB0B4C0),
+            color = MovieTixColors.CinemaTextSecondary,
             fontSize = 12.sp
         )
     }

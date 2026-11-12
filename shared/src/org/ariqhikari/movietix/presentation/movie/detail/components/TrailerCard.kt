@@ -35,6 +35,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil3.compose.AsyncImage
 import org.ariqhikari.movietix.core.presentation.components.shimmerPlaceholder
+import org.ariqhikari.movietix.core.presentation.theme.MovieTixColors
 import org.ariqhikari.movietix.domain.movie.model.TrailerVideo
 
 @Composable
@@ -143,7 +144,7 @@ fun TrailerCard(
                         Text(
                             text = "YouTube",
                             style = MaterialTheme.typography.labelSmall,
-                            color = Color(0xFFFF4444),
+                            color = MovieTixColors.StateErrorDark,
                             fontWeight = FontWeight.Bold
                         )
                     }

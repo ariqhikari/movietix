@@ -30,6 +30,7 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import coil3.compose.AsyncImage
 import org.ariqhikari.movietix.core.presentation.components.shimmerPlaceholder
+import org.ariqhikari.movietix.core.presentation.theme.MovieTixColors
 import org.ariqhikari.movietix.domain.movie.model.Movie
 
 @Composable
@@ -101,7 +102,7 @@ fun HeroBannerCarousel(
                             Text(
                                 text = "★",
                                 style = MaterialTheme.typography.labelSmall,
-                                color = Color(0xFFFFD700),
+                                color = MovieTixColors.CinemaPrimary,
                                 fontWeight = FontWeight.Bold
                             )
                             Spacer(modifier = Modifier.width(4.dp))
