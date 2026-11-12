@@ -7,9 +7,11 @@ import org.koin.mp.KoinPlatformTools
 
 /**
  * Initializes Koin for MovieTix safely (idempotent).
+ * Propagates platform isDebug flag to HttpClientFactory.
  * Uses KoinPlatformTools.defaultContext() for multiplatform compatibility.
  */
 fun startMovieTixKoin(
+    isDebug: Boolean = false,
     additionalModules: List<Module> = emptyList(),
     appDeclaration: KoinAppDeclaration = {}
 ) {
@@ -17,7 +19,7 @@ fun startMovieTixKoin(
         startKoin {
             appDeclaration()
             modules(
-                listOf(coreModule) + additionalModules
+                listOf(createCoreModule(isDebug = isDebug)) + additionalModules
             )
         }
     }

@@ -1,5 +1,6 @@
 package org.ariqhikari.movietix
 
+import android.content.pm.ApplicationInfo
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -14,7 +15,8 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
         super.onCreate(savedInstanceState)
         AndroidContextProvider.init(this)
-        startMovieTixKoin()
+        val isDebug = (applicationInfo.flags and ApplicationInfo.FLAG_DEBUGGABLE) != 0
+        startMovieTixKoin(isDebug = isDebug)
 
         setContent {
             App()

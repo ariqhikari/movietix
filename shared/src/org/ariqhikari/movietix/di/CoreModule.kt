@@ -11,11 +11,11 @@ import org.koin.dsl.module
 
 /**
  * Core Koin Module providing:
- * - Singleton HttpClient (configured with base URL, engine, and bearer token)
+ * - Singleton HttpClient (configured with base URL, engine, bearer token, and isDebug flag)
  * - Singleton DataStore<Preferences>
  * - IO CoroutineDispatcher
  */
-val coreModule = module {
+fun createCoreModule(isDebug: Boolean = false) = module {
     single { getHttpEngine() }
 
     single {
@@ -23,7 +23,7 @@ val coreModule = module {
         createHttpClient(
             engine = engine,
             bearerToken = Secrets.TMDB_ACCESS_TOKEN,
-            isDebug = true
+            isDebug = isDebug
         )
     }
 
@@ -31,3 +31,5 @@ val coreModule = module {
 
     single<CoroutineDispatcher> { Dispatchers.IO }
 }
+
+val coreModule = createCoreModule(isDebug = false)
